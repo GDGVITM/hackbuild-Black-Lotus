@@ -1,0 +1,31 @@
+## Frequently Asked Questions
+
+### The Platform & User Experience
+
+**Q: What makes WorkHive student profiles unique?**
+A: Unlike traditional resumes, our profiles are dynamic and project-based. Students can link to real-world work on **GitHub, Figma, and Google Drive**, providing verifiable proof of their skills. This allows you to evaluate talent based on tangible work, not just a list of qualifications.
+
+**Q: How does the matching engine work?**
+A: The **intelligent matching engine** is a sophisticated recommendation system. It goes beyond simple keywords to analyze a project's needs and a student's complete profile—including their skills, badges, reputation score, and availability—to present you with the most qualified candidates. This ensures a high match rate and saves you from a lengthy search.
+
+**Q: What are the fees for using the platform?**
+A: We have a simple, transparent fee structure. For businesses, a small service fee is added to the total project cost. For students, a commission is deducted from their earnings. The specific percentages are clearly displayed before a contract is finalized, and we do not charge for profiles, proposals, or interviews.
+
+### Payments & Security
+
+**Q: How is my money protected?**
+A: Your funds are protected by our secure **escrow payment** system. When you hire a student, you fund the project into a secure holding account. The money is only released to the student after you have approved each completed milestone. If a milestone is not approved, the funds remain safe in escrow.
+
+**Q: Are my projects legally protected?**
+A: Yes. For every project, our platform automatically generates a legally-binding contract with **e-signatures**. This agreement protects both parties and outlines the scope of work and payment terms. You can also easily add a **Non-Disclosure Agreement (NDA)** to a project for added security. All automated invoices are **GST compliant**.
+
+**Q: What is the dispute resolution process?**
+A: In the event of a disagreement, you can formally initiate a **dispute resolution** case. A member of our team will act as a neutral third party, reviewing all communication, files, and milestones within the **Collaboration Hub** to mediate and propose a fair solution based on the project's history.
+
+### Tools & Collaboration
+
+**Q: Can I use my existing tools?**
+A: Yes, our platform is designed to be a central hub for all project work, but it integrates seamlessly with your favorite tools. You can connect your **Google Drive** for file sharing, **Figma** for design collaboration, and **Stripe** or **Razorpay** for secure payments.
+
+**Q: What if I need to hire a team of students for a larger project?**
+A: Our platform supports hiring multiple students for a single project. The **Collaboration Hub** can be configured to include an entire team, allowing you to manage multiple freelancers, track individual progress on a single task board, and communicate in a unified chat.
