@@ -1,0 +1,535 @@
+import React from "react";
+import { Logo } from "@/components/Logo";
+import { Button } from "@/components/ui/button";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Separator } from "@/components/ui/separator";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import axios from "axios";
+import { toast } from "sonner";
+import { useNavigate } from "react-router-dom";
+import { Textarea } from "@/components/ui/textarea";
+
+// Define the Zod schema based on the studentUserSchema
+const formSchema = z.object({
+  fullname: z.string().min(1, "Full name is required"),
+  email: z.string().email("Please enter a valid email address"),
+  password: z.string().min(8, "Password must be at least 8 characters long"),
+  avatar: z.instanceof(File).optional(),
+  headline: z.string().optional(),
+  bio: z.string().optional(),
+  skills: z.string().optional(), // Will be parsed as a comma-separated string
+  hourlyRate: z.number().optional(),
+  portfolioLinks: z
+    .object({
+      github: z.string().optional(),
+      linkedin: z.string().optional(),
+      website: z.string().optional(),
+    })
+    .optional(),
+  educationDetails: z
+    .object({
+      degree: z.string().optional(),
+      institution: z.string().optional(),
+      major: z.string().optional(),
+      yearOfPassing: z.number().optional(),
+    })
+    .optional(),
+  role: z.string().default("student"),
+});
+
+const SignUp = () => {
+  const [avatarPreview, setAvatarPreview] = useState(null);
+  const [step, setStep] = useState(1);
+  const navigate = useNavigate();
+
+  const form = useForm({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      fullname: "",
+      email: "",
+      password: "",
+      avatar: undefined,
+      headline: "",
+      bio: "",
+      skills: "",
+      hourlyRate: 0,
+      portfolioLinks: { github: "", linkedin: "", website: "" },
+      educationDetails: {
+        degree: "",
+        institution: "",
+        major: "",
+        yearOfPassing: undefined,
+      },
+      role: "student",
+    },
+  });
+
+  const onSubmit = async (data) => {
+    // Process skills string into an array
+    const processedData = {
+      ...data,
+      skills: data.skills
+        ? data.skills.split(",").map((skill) => skill.trim())
+        : [],
+    };
+
+    const formData = new FormData();
+    // Append all fields to the FormData object
+    Object.keys(processedData).forEach((key) => {
+      // Handle nested objects for formData
+      if (key === "portfolioLinks" || key === "educationDetails") {
+        if (processedData[key]) {
+          Object.keys(processedData[key]).forEach((nestedKey) => {
+            if (processedData[key][nestedKey]) {
+              formData.append(
+                `${key}[${nestedKey}]`,
+                processedData[key][nestedKey]
+              );
+            }
+          });
+        }
+      } else if (key === "avatar") {
+        if (processedData.avatar) {
+          formData.append(key, processedData.avatar);
+        }
+      } else if (Array.isArray(processedData[key])) {
+        processedData[key].forEach((item) => formData.append(`${key}[]`, item));
+      } else if (processedData[key]) {
+        formData.append(key, processedData[key]);
+      }
+    });
+
+    try {
+      const apiBaseUrl =
+        import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
+      const res = await axios.post(`${apiBaseUrl}/users/register`, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
+      });
+      console.log("User registered:", res.data);
+      toast.success("User registered successfully!");
+      setTimeout(() => {
+        navigate("/login");
+      }, 2000);
+    } catch (err) {
+      toast.error(err.response?.data?.message || "Registration failed.");
+      console.error("Registration Error:", err.response?.data);
+    }
+  };
+
+  const handleAvatarChange = (event) => {
+    const file = event.target.files?.[0];
+
+    if (file) {
+      setAvatarPreview(URL.createObjectURL(file));
+      form.setValue("avatar", file);
+    } else {
+      setAvatarPreview(null);
+      form.setValue("avatar", undefined);
+    }
+  };
+
+  useEffect(() => {
+    return () => {
+      if (avatarPreview) {
+        URL.revokeObjectURL(avatarPreview);
+      }
+    };
+  }, [avatarPreview]);
+
+  return (
+    <div className="min-h-screen flex items-center justify-center py-12">
+      <div className="max-w-md w-full flex flex-col items-center p-6 bg-white rounded-lg shadow-md">
+        <Logo className="h-9 w-9" />
+        <p className="mt-4 text-xl font-bold tracking-tight">
+          Sign up as a Student
+        </p>
+
+        <Button className="mt-8 w-full gap-3 bg-red-500 hover:bg-red-600">
+          <GoogleLogo />
+          Continue with Google
+        </Button>
+
+        <div className="my-7 w-full flex items-center justify-center overflow-hidden">
+          <Separator />
+          <span className="text-sm px-2 text-gray-500">OR</span>
+          <Separator />
+        </div>
+
+        <Form {...form}>
+          <form
+            className="w-full space-y-4"
+            onSubmit={form.handleSubmit(onSubmit)}
+          >
+            {step === 1 && (
+              <>
+                <FormField
+                  control={form.control}
+                  name="fullname"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Full Name</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Full name" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="Email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="password"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Password</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="password"
+                          placeholder="Password"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <Button
+                  type="button"
+                  onClick={() => setStep(2)}
+                  className="w-full bg-orange-500 hover:bg-orange-600"
+                >
+                  Next
+                </Button>
+                <div className="flex justify-center text-sm mt-2">
+                  <Button
+                    type="submit"
+                    variant="link"
+                    className="text-muted-foreground p-0"
+                  >
+                    Skip and Finish
+                  </Button>
+                </div>
+              </>
+            )}
+
+            {step === 2 && (
+              <>
+                <h3 className="text-lg font-bold">
+                  Additional Details (Optional)
+                </h3>
+                <FormField
+                  control={form.control}
+                  name="headline"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Headline</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g., Aspiring Web Developer"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="bio"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Bio</FormLabel>
+                      <FormControl>
+                        <Textarea
+                          placeholder="Tell us about yourself..."
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="skills"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Skills</FormLabel>
+                      <FormControl>
+                        <Input
+                          placeholder="e.g., JavaScript, React, Node.js (comma-separated)"
+                          {...field}
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="hourlyRate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Hourly Rate ($)</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="number"
+                          placeholder="0"
+                          {...field}
+                          onChange={(e) =>
+                            field.onChange(parseFloat(e.target.value) || 0)
+                          }
+                        />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold mt-4">
+                    Portfolio Links
+                  </h4>
+                  <FormField
+                    control={form.control}
+                    name="portfolioLinks.github"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>GitHub</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="https://github.com/..."
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="portfolioLinks.linkedin"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>LinkedIn</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="https://linkedin.com/in/..."
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="portfolioLinks.website"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Personal Website</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="https://mywebsite.com"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <div className="space-y-4">
+                  <h4 className="text-lg font-semibold mt-4">
+                    Education Details
+                  </h4>
+                  <FormField
+                    control={form.control}
+                    name="educationDetails.degree"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Degree</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g., Bachelor of Science"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="educationDetails.institution"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Institution</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g., University of Google"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="educationDetails.major"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Major</FormLabel>
+                        <FormControl>
+                          <Input
+                            placeholder="e.g., Computer Science"
+                            {...field}
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="educationDetails.yearOfPassing"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Year of Passing</FormLabel>
+                        <FormControl>
+                          <Input
+                            type="number"
+                            placeholder="e.g., 2025"
+                            {...field}
+                            onChange={(e) =>
+                              field.onChange(
+                                parseInt(e.target.value, 10) || undefined
+                              )
+                            }
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+                <FormField
+                  control={form.control}
+                  name="avatar"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Avatar</FormLabel>
+                      <FormControl>
+                        <Input
+                          type="file"
+                          accept="image/*"
+                          ref={field.ref}
+                          name={field.name}
+                          onBlur={field.onBlur}
+                          onChange={handleAvatarChange}
+                        />
+                      </FormControl>
+                      {avatarPreview && (
+                        <div className="mt-2">
+                          <img
+                            src={avatarPreview}
+                            alt="Avatar Preview"
+                            className="h-20 w-20 rounded-full object-cover"
+                          />
+                        </div>
+                      )}
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+                <div className="flex gap-2">
+                  <Button
+                    type="button"
+                    onClick={() => setStep(1)}
+                    variant="outline"
+                    className="w-full"
+                  >
+                    Back
+                  </Button>
+                  <Button type="submit" className="w-full">
+                    Sign Up
+                  </Button>
+                </div>
+              </>
+            )}
+          </form>
+        </Form>
+
+        <p className="mt-5 text-sm text-center">
+          Already have an account?
+          <Link to="/login" className="ml-1 underline text-muted-foreground">
+            Log in
+          </Link>
+        </p>
+      </div>
+    </div>
+  );
+};
+
+const GoogleLogo = () => (
+  <svg
+    width="1.2em"
+    height="1.2em"
+    viewBox="0 0 16 16"
+    fill="none"
+    xmlns="http://www.w3.org/2000/svg"
+    className="inline-block shrink-0 align-sub text-[inherit]"
+  >
+    <g clipPath="url(#clip0)">
+      <path
+        d="M15.6823 8.18368C15.6823 7.63986 15.6382 7.0931 15.5442 6.55811H7.99829V9.63876H12.3194C12.1401 10.6323 11.564 11.5113 10.7203 12.0698V14.0687H13.2983C14.8122 12.6753 15.6823 10.6176 15.6823 8.18368Z"
+        fill="#4285F4"
+      ></path>
+      <path
+        d="M7.99812 16C10.1558 16 11.9753 15.2915 13.3011 14.0687L10.7231 12.0698C10.0058 12.5578 9.07988 12.8341 8.00106 12.8341C5.91398 12.8341 4.14436 11.426 3.50942 9.53296H0.849121V11.5936C2.2072 14.295 4.97332 16 7.99812 16Z"
+        fill="#34A853"
+      ></path>
+      <path
+        d="M3.50665 9.53295C3.17154 8.53938 3.17154 7.4635 3.50665 6.46993V4.4093H0.849292C-0.285376 6.66982 -0.285376 9.33306 0.849292 11.5936L3.50665 9.53295Z"
+        fill="#FBBC04"
+      ></path>
+      <path
+        d="M7.99812 3.16589C9.13867 3.14825 10.241 3.57743 11.067 4.36523L13.3511 2.0812C11.9048 0.723121 9.98526 -0.0235266 7.99812 -1.02057e-05C4.97332 -1.02057e-05 2.2072 1.70493 0.849121 4.40932L3.50648 6.46995C4.13848 4.57394 5.91104 3.16589 7.99812 3.16589Z"
+        fill="#EA4335"
+      ></path>
+    </g>
+    <defs>
+      <clipPath id="clip0">
+        <rect width="15.6825" height="16" fill="white"></rect>
+      </clipPath>
+    </defs>
+  </svg>
+);
+
+export default SignUp;

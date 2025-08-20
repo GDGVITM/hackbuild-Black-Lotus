@@ -5,6 +5,7 @@ import { StudentUser } from "../models/studentUser.model.js";
 import { uploadOnCloudinary } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
 
+// This function generates and saves access and refresh tokens for a user.
 const generateAccessAndRefreshTokens = async (userId) => {
   try {
     const student = await StudentUser.findById(userId);
@@ -36,23 +37,30 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError("Student with this email already exists", 409);
   }
 
+  // --- FIX START ---
+  // Initialize the avatar path and URL as null.
+  // We will only proceed with avatar upload if a file is provided.
   const avatarLocalPath = req.file?.path;
+  let avatarUrl = null;
 
-  if (!avatarLocalPath) {
-    throw new ApiError("Please upload an avatar", 400);
+  // Check if an avatar file was uploaded.
+  if (avatarLocalPath) {
+    const avatarResult = await uploadOnCloudinary(avatarLocalPath);
+    if (!avatarResult || !avatarResult.url) {
+      // If upload fails, throw an error. This is a server-side issue.
+      throw new ApiError("Avatar upload failed, please try again", 500);
+    }
+    // If upload is successful, store the URL.
+    avatarUrl = avatarResult.url;
   }
-
-  const avatar = await uploadOnCloudinary(avatarLocalPath);
-
-  if (!avatar || !avatar.url) {
-    throw new ApiError("Avatar upload failed, please try again", 500);
-  }
+  // If no file was uploaded, avatarUrl remains null, which is what we want.
+  // --- FIX END ---
 
   const student = await StudentUser.create({
     fullname,
     email: email.toLowerCase(),
     password,
-    avatar: avatar.url,
+    avatar: avatarUrl, // Use the conditional avatarUrl
   });
 
   const createdStudent = await StudentUser.findById(student._id).select("-password -refreshToken");
