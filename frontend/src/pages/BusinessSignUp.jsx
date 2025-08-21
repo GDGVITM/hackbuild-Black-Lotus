@@ -20,12 +20,12 @@ import axios from "axios";
 import { toast } from "sonner";
 import { useNavigate } from "react-router-dom";
 
-// Define the Zod schema for the business user
+// ✅ Schema with optional avatar
 const formSchema = z.object({
   fullname: z.string().min(1, "Full name is required"),
   email: z.string().email("Please enter a valid email address"),
   password: z.string().min(8, "Password must be at least 8 characters long"),
-  avatar: z.instanceof(File, { message: "Avatar is required" }),
+  avatar: z.instanceof(File).optional(), // <-- optional now
   role: z.string().default("business"),
 });
 
@@ -46,10 +46,11 @@ const BusinessSignUp = () => {
 
   const onSubmit = async (data) => {
     const formData = new FormData();
-    // Append all fields to the FormData object
+
+    // ✅ Only append avatar if present
     Object.keys(data).forEach((key) => {
-      if (key === "avatar") {
-        formData.append(key, data.avatar);
+      if (key === "avatar" && data.avatar) {
+        formData.append("avatar", data.avatar);
       } else if (data[key]) {
         formData.append(key, data[key]);
       }
@@ -57,7 +58,7 @@ const BusinessSignUp = () => {
 
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_API_BASE_URL}/users/register`,
+        `${import.meta.env.VITE_API_BASE_URL}/users/business/register`,
         formData,
         {
           headers: {
@@ -199,7 +200,7 @@ const BusinessSignUp = () => {
               name="avatar"
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel>Company Logo</FormLabel>
+                  <FormLabel>Company Logo (optional)</FormLabel>
                   <FormControl>
                     <Input
                       type="file"

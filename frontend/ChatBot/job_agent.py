@@ -1,4 +1,5 @@
 from pathlib import Path
+import json
 from langchain_community.vectorstores import Chroma
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
@@ -10,27 +11,19 @@ import os
 
 
 class JobRecommenderAgent:
-    def __init__(self, llm=None, data_dir="./"):
-        self.data_dir = Path(data_dir)
+    def __init__(self, llm=None, data_file="jobs_dataset.json"):
+        self.data_file = Path(data_file)
 
-        # Files used for job recommendations
-        self.file_paths = [
-            self.data_dir / "student_guide.txt",
-            self.data_dir / "business_guide.txt",
-            self.data_dir / "faq.txt",
-        ]
+        if not self.data_file.exists():
+            raise FileNotFoundError(f"Missing dataset: {self.data_file}")
 
-        # Load docs
-        docs = []
-        for f in self.file_paths:
-            if f.exists():
-                docs.extend(TextLoader(f).load())
-            else:
-                raise FileNotFoundError(f"Missing file: {f}")
+        # Load jobs dataset
+        with open(self.data_file, "r", encoding="utf-8") as f:
+            dataset_text = f.read()
 
-        # Split into chunks
-        splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=200)
-        chunks = splitter.split_documents(docs)
+        # Split into chunks for vector search
+        splitter = RecursiveCharacterTextSplitter(chunk_size=1000, chunk_overlap=200)
+        chunks = splitter.create_documents([dataset_text])
 
         # Vector DB
         embedding = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
@@ -40,29 +33,34 @@ class JobRecommenderAgent:
         # LLM
         self.llm = llm or ChatGoogleGenerativeAI(model="gemini-1.5-flash-latest", temperature=0.2)
 
-        # Prompt
+        # Prompt for structured job output
         self.job_prompt = ChatPromptTemplate.from_messages([
             SystemMessage(content="""You are an AI career advisor for the 'WorkHive' student freelance marketplace.
-Use the provided context to:
-- Recommend suitable freelance jobs based on the user's skills, profile, or business needs
-- Suggest categories, roles, and workflow steps
-- Reference platform features like proposals, contracts, escrow, compliance, and collaboration
-Be specific, structured, and professional, but also friendly and supportive."""),
+
+You must ONLY return results in valid JSON format with this structure:
+[
+  {
+    "title": "string",
+    "company": "string",
+    "rate": "string",
+    "skills_required": ["string", "string"],
+    "description": "string",
+    "link": "string"
+  }
+]
+
+Rules:
+- Do NOT include extra text, only valid JSON
+- Select 3–5 relevant jobs based on the query
+- Use the provided dataset context
+"""),
             ("human", "Context:\n{context}\n\nUser profile/query: {query}")
         ])
 
         self.chain = self.job_prompt | self.llm | StrOutputParser()
 
     def format_docs(self, docs):
-        lines = []
-        for d in docs:
-            if hasattr(d, "page_content"):
-                lines.append(d.page_content)
-            elif isinstance(d, dict) and "page_content" in d:
-                lines.append(d["page_content"])
-            else:
-                lines.append(str(d))
-        return "\n\n".join(lines)
+        return "\n\n".join(d.page_content for d in docs)
 
     def recommend(self, query: str):
         # Retrieve relevant docs
@@ -70,6 +68,18 @@ Be specific, structured, and professional, but also friendly and supportive.""")
         context = self.format_docs(relevant_docs)
 
         if not context or len(context.strip()) < 50:
-            return "I couldn’t find enough info in the guides. Please try giving me more details about your skills or career goals."
+            return {"error": "I couldn’t find enough info in the guides. Please give me more details about your skills or career goals."}
 
-        return self.chain.invoke({"query": query, "context": context})
+        raw_reply = self.chain.invoke({"query": query, "context": context})
+
+        # --- Fix JSON parsing ---
+        try:
+            # Remove code fences if they exist
+            if raw_reply.strip().startswith("```"):
+                raw_reply = raw_reply.strip().strip("`").replace("json", "", 1).strip()
+
+            jobs = json.loads(raw_reply)
+            return {"jobs": jobs}
+        except Exception:
+            # fallback if LLM returns non-JSON text
+            return {"text": raw_reply}

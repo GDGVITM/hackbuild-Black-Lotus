@@ -63,8 +63,8 @@ import threadRoutes from "./routes/thread.routes.js";
 import topicRoutes from "./routes/topic.routes.js";
 
 // Existing route mounting
-app.use("/api/v1/users", studentRoutes);
-app.use("/api/v1/users", businessRoutes);
+app.use("/api/v1/users/student", studentRoutes);
+app.use("/api/v1/users/business", businessRoutes);
 app.use("/api/v1/healthcheck", healthcheckRouter);
 app.use("/api/v1/payments", paymentRouter);
 app.use("/api/v1/agora", agoraRouter);

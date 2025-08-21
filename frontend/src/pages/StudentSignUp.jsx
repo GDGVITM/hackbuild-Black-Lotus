@@ -114,11 +114,15 @@ const SignUp = () => {
     try {
       const apiBaseUrl =
         import.meta.env.VITE_API_BASE_URL || "http://localhost:3000";
-      const res = await axios.post(`${apiBaseUrl}/users/register`, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      });
+      const res = await axios.post(
+        `${apiBaseUrl}/users/student/register`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
       console.log("User registered:", res.data);
       toast.success("User registered successfully!");
       setTimeout(() => {

@@ -14,8 +14,10 @@ import Navbar from "@/components/blocks/Navbar/Navbar";
 import Footer from "@/components/Footer";
 import ChatBotButton from "@/components/ChatBotButton";
 import { Toaster } from "sonner";
-
+import FindWork from "./pages/FindWork";
+import NewProjectForm from "./components/NewProjectForm";
 // PAGES
+import ManageProjects from "./pages/ManageProjects";
 import Login from "@/pages/Login";
 import SignUp from "@/pages/StudentSignUp";
 import BusinessSignUp from "@/pages/BusinessSignUp";
@@ -25,7 +27,7 @@ import UserProfile from "@/pages/UserProfile";
 import PaymentPage from "@/pages/PaymentPage";
 import Dashboard from "@/pages/StudentDashboard";
 import CommunityDashboard from "./pages/Community";
-
+import BusinessDashboard from "./pages/BusinessDashboard";
 const hiddenLayoutRoutes = ["/login", "/signup"];
 
 const Layout = ({ children }) => {
@@ -57,8 +59,12 @@ function App() {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/user-profile" element={<UserProfile />} />
             <Route path="/payment" element={<PaymentPage />} />
-            <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/find-work" element={<FindWork />} />
+            <Route path="/student/dashboard" element={<Dashboard />} />
+            <Route path="/business/dashboard" element={<BusinessDashboard />} />
             <Route path="/community" element={<CommunityDashboard />} />
+            <Route path="/post-project" element={<NewProjectForm />} />
+            <Route path="/manage-projects" element={<ManageProjects />} />
           </Routes>
         </Layout>
       </Router>

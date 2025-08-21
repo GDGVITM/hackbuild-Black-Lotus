@@ -1,4 +1,8 @@
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { Button } from "@/components/ui/button";
 import { MessageCircle, Send } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
@@ -41,7 +45,8 @@ const ChatBotButton = () => {
         history,
       });
 
-      let botReply = res.data?.data?.reply || "Sorry, I couldn't get a response.";
+      let botReply =
+        res.data?.data?.reply || "Sorry, I couldn't get a response.";
 
       // Optional navigation directive in response
       const navRegex = /NAVIGATE_TO::(\/\S*)/;
@@ -62,7 +67,10 @@ const ChatBotButton = () => {
       }
     } catch (error) {
       console.error("Error sending message:", error);
-      const errorMsg = { from: "bot", text: "Sorry, something went wrong. Please try again." };
+      const errorMsg = {
+        from: "bot",
+        text: "Sorry, something went wrong. Please try again.",
+      };
       setMessages((prev) => [...prev, errorMsg]);
     } finally {
       setIsLoading(false);
@@ -77,7 +85,9 @@ const ChatBotButton = () => {
 
   useEffect(() => {
     if (isOpen && messages.length === 0) {
-      setMessages([{ from: "bot", text: "Hi! I'm Nexus. How can I help you today?" }]);
+      setMessages([
+        { from: "bot", text: "Hi! I'm Nexus. How can I help you today?" },
+      ]);
     }
   }, [isOpen]);
 
@@ -123,7 +133,9 @@ const ChatBotButton = () => {
             ))}
             {isLoading && (
               <div className="flex justify-start">
-                <div className="bg-muted text-foreground px-3 py-2 rounded-lg max-w-[85%]">...</div>
+                <div className="bg-muted text-foreground px-3 py-2 rounded-lg max-w-[85%]">
+                  ...
+                </div>
               </div>
             )}
             <div ref={messagesEndRef} />

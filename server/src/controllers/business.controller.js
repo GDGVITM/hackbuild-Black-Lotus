@@ -36,23 +36,26 @@ const registerUser = asyncHandler(async (req, res) => {
     throw new ApiError("User with this email already exists", 409);
   }
 
+  // --- START OF FIX ---
+  // The avatar is now optional. Check if a file was uploaded.
   const avatarLocalPath = req.file?.path;
+  let avatarUrl = null;
 
-  if (!avatarLocalPath) {
-    throw new ApiError("Please upload an avatar", 400);
+  // Only attempt to upload if a file path is available.
+  if (avatarLocalPath) {
+    const avatarResult = await uploadOnCloudinary(avatarLocalPath);
+    if (!avatarResult || !avatarResult.url) {
+      throw new ApiError("Avatar upload failed, please try again", 500);
+    }
+    avatarUrl = avatarResult.url;
   }
-
-  const avatar = await uploadOnCloudinary(avatarLocalPath);
-
-  if (!avatar || !avatar.url) {
-    throw new ApiError("Avatar upload failed, please try again", 500);
-  }
+  // --- END OF FIX ---
 
   const user = await BusinessUser.create({
     fullname,
     email: email.toLowerCase(),
     password,
-    avatar: avatar.url,
+    avatar: avatarUrl, // Use the dynamically set avatarUrl
   });
 
   const createdUser = await BusinessUser.findById(user._id).select("-password -refreshToken");
@@ -180,7 +183,7 @@ const changeCurrentPassword = asyncHandler(async (req, res) => {
 });
 
 const getCurrentUser = asyncHandler(async (req, res) => {
-  return res.status(200).json(new ApiResponse(200, req.user, "Current user fetched successfully"));
+  return res.status(200).json(new ApiResponse(200, "Current user fetched successfully", req.user));
 });
 
 const updateUserProfileDetails = asyncHandler(async (req, res) => {
