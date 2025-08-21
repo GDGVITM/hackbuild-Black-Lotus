@@ -25,6 +25,7 @@ import UserProfile from "@/pages/UserProfile";
 import PaymentPage from "@/pages/PaymentPage";
 import Dashboard from "@/pages/StudentDashboard";
 import CommunityDashboard from "./pages/Community";
+import FindWork from "./pages/FindWork";
 
 const hiddenLayoutRoutes = ["/login", "/signup"];
 
@@ -59,6 +60,7 @@ function App() {
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/community" element={<CommunityDashboard />} />
+            <Route path="/findwork" element={<FindWork />} />
           </Routes>
         </Layout>
       </Router>

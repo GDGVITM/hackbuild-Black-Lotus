@@ -4,7 +4,9 @@ from chatbot import get_response, convert_history, ChatRequest
 from job_agent import JobRecommenderAgent
 from langchain_google_genai import ChatGoogleGenerativeAI
 
-# Initialize FastAPI
+# -------------------------
+# Init FastAPI
+# -------------------------
 app = FastAPI()
 
 # CORS
@@ -17,9 +19,13 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Init Job Agent
+# -------------------------
+# Init Agents
+# -------------------------
 llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash-latest", temperature=0.2)
-job_agent = JobRecommenderAgent(llm=llm)
+
+# Job recommender with dataset
+job_agent = JobRecommenderAgent(llm=llm, data_file="jobs_dataset.json")
 
 # -------------------------
 # Routes
@@ -27,10 +33,14 @@ job_agent = JobRecommenderAgent(llm=llm)
 
 @app.post("/chat")
 async def chat_endpoint(req: ChatRequest):
+    """
+    General chatbot endpoint
+    """
     user_msg = req.message.strip()
     hist_msgs = convert_history(req.history)
     reply = await get_response(user_msg, hist_msgs)
     return {"data": {"reply": reply}}
+
 
 @app.post("/recommend")
 async def recommend_endpoint(data: dict = Body(...)):
@@ -38,7 +48,8 @@ async def recommend_endpoint(data: dict = Body(...)):
     if not query:
         return {"error": "Query is required"}
     reply = job_agent.recommend(query)
-    return {"data": {"reply": reply}}
+    return {"data": reply}
+
 
 # -------------------------
 # Run app
