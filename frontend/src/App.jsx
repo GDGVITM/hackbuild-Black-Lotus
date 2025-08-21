@@ -24,6 +24,7 @@ import ContactPage from "@/pages/ContactUs";
 import UserProfile from "@/pages/UserProfile";
 import PaymentPage from "@/pages/PaymentPage";
 import Dashboard from "@/pages/StudentDashboard";
+import CommunityDashboard from "./pages/Community";
 
 const hiddenLayoutRoutes = ["/login", "/signup"];
 
@@ -57,6 +58,7 @@ function App() {
             <Route path="/user-profile" element={<UserProfile />} />
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/dashboard" element={<Dashboard />} />
+            <Route path="/community" element={<CommunityDashboard />} />
           </Routes>
         </Layout>
       </Router>

@@ -46,6 +46,7 @@ app.use(express.static("public"));
 app.use(cookieParser());
 app.use("/peerjs", peerServer);
 
+// Existing route imports
 import studentRoutes from "./routes/student.routes.js";
 import businessRoutes from "./routes/business.routes.js";
 import healthcheckRouter from "./routes/healthcheck.routes.js";
@@ -57,6 +58,11 @@ import proposalRouter from "./routes/proposal.routes.js";
 import contractRouter from "./routes/contract.routes.js";
 import reviewRouter from "./routes/review.routes.js";
 
+// New route imports for threads and topics
+import threadRoutes from "./routes/thread.routes.js";
+import topicRoutes from "./routes/topic.routes.js";
+
+// Existing route mounting
 app.use("/api/v1/users", studentRoutes);
 app.use("/api/v1/users", businessRoutes);
 app.use("/api/v1/healthcheck", healthcheckRouter);
@@ -67,6 +73,10 @@ app.use("/api/v1/projects", projectRouter);
 app.use("/api/v1/proposals", proposalRouter);
 app.use("/api/v1/contracts", contractRouter);
 app.use("/api/v1/reviews", reviewRouter);
+
+// Mount the new routes for threads and topics
+app.use("/api/v1/threads", threadRoutes);
+app.use("/api/v1/topics", topicRoutes);
 
 io.on("connection", (socket) => {
   console.log(`Socket.IO client connected: ${socket.id}`);
