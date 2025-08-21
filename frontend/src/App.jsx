@@ -5,7 +5,7 @@ import {
   Route,
   useLocation,
 } from "react-router-dom";
-
+import BusinessDashboard from "./pages/BusinessDashboard";
 // CONTEXT
 import { CallProvider, useCall } from "@/context/CallContext";
 
@@ -14,7 +14,7 @@ import Navbar from "@/components/blocks/Navbar/Navbar";
 import Footer from "@/components/Footer";
 import ChatBotButton from "@/components/ChatBotButton";
 import { Toaster } from "sonner";
-import FindWork from "./pages/FindWork";
+
 import NewProjectForm from "./components/NewProjectForm";
 // PAGES
 import ManageProjects from "./pages/ManageProjects";
