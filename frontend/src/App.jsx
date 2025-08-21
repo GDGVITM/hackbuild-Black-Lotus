@@ -27,7 +27,8 @@ import UserProfile from "@/pages/UserProfile";
 import PaymentPage from "@/pages/PaymentPage";
 import Dashboard from "@/pages/StudentDashboard";
 import CommunityDashboard from "./pages/Community";
-import BusinessDashboard from "./pages/BusinessDashboard";
+import FindWork from "./pages/FindWork";
+
 const hiddenLayoutRoutes = ["/login", "/signup"];
 
 const Layout = ({ children }) => {
@@ -63,8 +64,7 @@ function App() {
             <Route path="/student/dashboard" element={<Dashboard />} />
             <Route path="/business/dashboard" element={<BusinessDashboard />} />
             <Route path="/community" element={<CommunityDashboard />} />
-            <Route path="/post-project" element={<NewProjectForm />} />
-            <Route path="/manage-projects" element={<ManageProjects />} />
+            <Route path="/findwork" element={<FindWork />} />
           </Routes>
         </Layout>
       </Router>
