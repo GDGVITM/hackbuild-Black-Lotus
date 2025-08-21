@@ -28,7 +28,3 @@ wikipedia
 numpy
 scikit-learn
 pypdf
-
-#UI Interface
-uvicorn
-fastapi

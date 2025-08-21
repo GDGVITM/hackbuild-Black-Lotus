@@ -30,20 +30,18 @@ const ChatBotButton = () => {
     setIsLoading(true);
 
     try {
-      // ✅ Format history correctly for the backend
       const history = messages.map((msg) => ({
-        from: msg.from,
-        text: msg.text,
+        role: msg.from === "bot" ? "model" : "user",
+        parts: [{ text: msg.text }],
       }));
 
-      const res = await axios.post("http://localhost:8000/chat", {
+      const res = await axios.post("/chat", {
         message: currentInput,
         history,
       });
 
       let botReply = res.data?.data?.reply || "Sorry, I couldn't get a response.";
 
-      // Optional navigation directive in response
       const navRegex = /NAVIGATE_TO::(\/\S*)/;
       const navMatch = botReply.match(navRegex);
 

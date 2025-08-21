@@ -1,3 +1,5 @@
+from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import List, Dict
 from pathlib import Path
@@ -9,17 +11,27 @@ from langchain_community.vectorstores import Chroma
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
+from langchain_core.runnables import RunnablePassthrough
 from langchain_core.output_parsers import StrOutputParser
 
 import os
 
-# --- Load environment variables ---
+# Load environment variables
 load_dotenv()
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-if not GOOGLE_API_KEY:
-    raise ValueError("❌ GOOGLE_API_KEY is missing in .env")
 
-# Request model (used in FastAPI main.py)
+app = FastAPI()
+
+# CORS config
+origins = ["http://localhost:5173", "http://localhost:3000"]
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
+# Request model
 class ChatRequest(BaseModel):
     message: str
     history: List[Dict[str, str]] = []
@@ -43,22 +55,15 @@ splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=200)
 chunks = splitter.split_documents(docs)
 
 # --- Vectorstore ---
-embedding = GoogleGenerativeAIEmbeddings(
-    model="models/embedding-001",
-    google_api_key=GOOGLE_API_KEY
-)
+embedding = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 vector_store = Chroma.from_documents(chunks, embedding)
 retriever = vector_store.as_retriever(search_kwargs={"k": 4})
 
 # --- Model ---
-llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash-latest",
-    temperature=0.2,
-    google_api_key=GOOGLE_API_KEY
-)
+llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash-latest", temperature=0.2)
 
 # --- Enhanced Prompts ---
-# RAG prompt
+# RAG prompt for when context is available
 rag_prompt = ChatPromptTemplate.from_messages([
     SystemMessage(content="""You are an expert and helpful AI assistant for the 'WorkHive' freelance marketplace.
 
@@ -69,7 +74,7 @@ Be friendly, professional, and comprehensive in your responses. Draw directly fr
     ("human", "Context:\n{context}\n\nQuestion: {question}")
 ])
 
-# Fallback prompt
+# Fallback prompt for general conversation
 fallback_prompt = ChatPromptTemplate.from_messages([
     SystemMessage(content="""You are a helpful AI assistant for the 'WorkHive' freelance marketplace.
 
@@ -118,32 +123,62 @@ def is_greeting_or_general(message: str) -> bool:
 # --- Build chains ---
 fallback_chain = fallback_prompt | llm | StrOutputParser()
 
-# --- Smart routing ---
+# --- Smart routing function ---
 async def get_response(question: str, history: List):
     """Route to appropriate chain based on query type and context availability"""
     
-    # Greetings/general → fallback
+    # For greetings and very general queries, use fallback
     if is_greeting_or_general(question):
         print("👋 Using fallback for greeting/general query")
         return fallback_chain.invoke({"question": question, "history": history})
     
+    # Try RAG first
     try:
-        # Retrieve docs
+        # Retrieve relevant documents
         relevant_docs = retriever.invoke(question)
         context = format_docs(relevant_docs)
         
-        if context and len(context.strip()) > 50:
+        # If we have substantial context, use RAG
+        if context and len(context.strip()) > 50:  # Threshold for meaningful context
             print(f"📄 Using RAG with context length: {len(context)}")
+            
+            # Manually construct the RAG chain input
             rag_input = {
                 "question": question,
                 "context": context,
                 "history": history
             }
+            
+            # Use RAG chain
             return (rag_prompt | llm | StrOutputParser()).invoke(rag_input)
         else:
+            # No good context found, use fallback
             print("⚡ No relevant context found, using fallback")
             return fallback_chain.invoke({"question": question, "history": history})
             
     except Exception as e:
         print(f"❌ RAG chain error: {e}, falling back to general response")
         return fallback_chain.invoke({"question": question, "history": history})
+
+# --- Endpoint ---
+@app.post("/chat")
+async def chat_endpoint(req: ChatRequest):
+    try:
+        user_msg = req.message.strip()
+        hist_msgs = convert_history(req.history)
+
+        print("📩 User:", user_msg)
+        
+        reply = await get_response(user_msg, hist_msgs)
+        
+        print("🤖 Reply:", reply)
+
+        return {"data": {"reply": reply}}
+
+    except Exception as e:
+        print("❌ Backend error:", e)
+        return {"error": str(e)}
+
+if __name__ == "__main__":
+    import uvicorn
+    uvicorn.run(app, host="0.0.0.0", port=8000)

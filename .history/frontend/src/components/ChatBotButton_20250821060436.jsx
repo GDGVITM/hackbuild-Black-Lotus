@@ -36,7 +36,7 @@ const ChatBotButton = () => {
         text: msg.text,
       }));
 
-      const res = await axios.post("http://localhost:8000/chat", {
+      const res = await axios.post("http://localhost:3002/chat", {
         message: currentInput,
         history,
       });

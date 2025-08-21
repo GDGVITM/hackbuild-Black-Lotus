@@ -1,7 +1,5 @@
-from pydantic import BaseModel
-from typing import List, Dict
 from pathlib import Path
-from dotenv import load_dotenv
+from typing import List, Dict
 
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
@@ -10,21 +8,14 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from langchain_core.output_parsers import StrOutputParser
+from dotenv import load_dotenv
 
-import os
-
-# --- Load environment variables ---
 load_dotenv()
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-if not GOOGLE_API_KEY:
-    raise ValueError("❌ GOOGLE_API_KEY is missing in .env")
 
-# Request model (used in FastAPI main.py)
-class ChatRequest(BaseModel):
-    message: str
-    history: List[Dict[str, str]] = []
 
-# --- Load documents ---
+# -------------------------
+# Load Documents
+# -------------------------
 data_dir = Path("./")
 file_paths = [
     data_dir / "student_guide.txt",
@@ -42,22 +33,21 @@ for f in file_paths:
 splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=200)
 chunks = splitter.split_documents(docs)
 
-# --- Vectorstore ---
-embedding = GoogleGenerativeAIEmbeddings(
-    model="models/embedding-001",
-    google_api_key=GOOGLE_API_KEY
-)
+# -------------------------
+# Vectorstore
+# -------------------------
+embedding = GoogleGenerativeAIEmbeddings(model="models/embedding-001")
 vector_store = Chroma.from_documents(chunks, embedding)
 retriever = vector_store.as_retriever(search_kwargs={"k": 4})
 
-# --- Model ---
-llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash-latest",
-    temperature=0.2,
-    google_api_key=GOOGLE_API_KEY
-)
+# -------------------------
+# LLM
+# -------------------------
+llm = ChatGoogleGenerativeAI(model="gemini-1.5-flash-latest", temperature=0.2)
 
-# --- Enhanced Prompts ---
+# -------------------------
+# Prompts
+# -------------------------
 # RAG prompt
 rag_prompt = ChatPromptTemplate.from_messages([
     SystemMessage(content="""You are an expert and helpful AI assistant for the 'WorkHive' freelance marketplace.
@@ -82,7 +72,9 @@ Keep responses concise and helpful."""),
     ("human", "{question}")
 ])
 
-# --- Helper functions ---
+# -------------------------
+# Helper Functions
+# -------------------------
 def format_docs(docs):
     lines = []
     for d in docs:
@@ -104,7 +96,6 @@ def convert_history(history: List[Dict[str, str]]):
     return msgs
 
 def is_greeting_or_general(message: str) -> bool:
-    """Check if message is a greeting or very general query"""
     greetings = ["hello", "hi", "hey", "good morning", "good afternoon", "good evening"]
     general_queries = ["help", "what can you do", "how are you"]
     
@@ -112,38 +103,33 @@ def is_greeting_or_general(message: str) -> bool:
     return (
         any(greeting in msg_lower for greeting in greetings) or
         any(query in msg_lower for query in general_queries) or
-        len(msg_lower.split()) <= 2  # Very short queries
+        len(msg_lower.split()) <= 2
     )
 
-# --- Build chains ---
+# -------------------------
+# Build Chains
+# -------------------------
 fallback_chain = fallback_prompt | llm | StrOutputParser()
 
-# --- Smart routing ---
-async def get_response(question: str, history: List):
+
+# -------------------------
+# Chatbot Logic (NO FastAPI)
+# -------------------------
+async def get_response(question: str, history: List[Dict[str, str]]):
     """Route to appropriate chain based on query type and context availability"""
-    
-    # Greetings/general → fallback
+    hist_msgs = convert_history(history)
+
     if is_greeting_or_general(question):
-        print("👋 Using fallback for greeting/general query")
-        return fallback_chain.invoke({"question": question, "history": history})
-    
+        return fallback_chain.invoke({"question": question, "history": hist_msgs})
+
     try:
-        # Retrieve docs
         relevant_docs = retriever.invoke(question)
         context = format_docs(relevant_docs)
-        
+
         if context and len(context.strip()) > 50:
-            print(f"📄 Using RAG with context length: {len(context)}")
-            rag_input = {
-                "question": question,
-                "context": context,
-                "history": history
-            }
+            rag_input = {"question": question, "context": context, "history": hist_msgs}
             return (rag_prompt | llm | StrOutputParser()).invoke(rag_input)
         else:
-            print("⚡ No relevant context found, using fallback")
-            return fallback_chain.invoke({"question": question, "history": history})
-            
-    except Exception as e:
-        print(f"❌ RAG chain error: {e}, falling back to general response")
-        return fallback_chain.invoke({"question": question, "history": history})
+            return fallback_chain.invoke({"question": question, "history": hist_msgs})
+    except Exception:
+        return fallback_chain.invoke({"question": question, "history": hist_msgs})
