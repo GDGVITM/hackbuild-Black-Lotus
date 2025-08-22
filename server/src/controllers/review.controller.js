@@ -3,8 +3,7 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { Review } from "../models/review.model.js";
 import { Contract } from "../models/contract.model.js";
-import { StudentUser } from "../models/studentUser.model.js";
-import { BusinessUser } from "../models/businessUser.model.js";
+import { User } from "../models/user.model.js";
 import mongoose from "mongoose";
 
 const createReview = asyncHandler(async (req, res) => {
@@ -64,15 +63,10 @@ const createReview = asyncHandler(async (req, res) => {
 
   if (stats.length > 0) {
     const avgRating = stats[0].avgRating.toFixed(1);
-    // Determine which user model to update based on the review type
-    if (reviewType === "client-to-student") {
-      await StudentUser.findByIdAndUpdate(revieweeId, { averageRating: avgRating });
-    } else {
-      await BusinessUser.findByIdAndUpdate(revieweeId, { averageRating: avgRating });
-    }
+    await User.findByIdAndUpdate(revieweeId, { averageRating: avgRating });
   }
 
-  return res.status(201).json(new ApiResponse(201, review, "Review submitted successfully"));
+  return res.status(201).json(new ApiResponse(201, "Review submitted successfully", review));
 });
 
 const getReviewsForProject = asyncHandler(async (req, res) => {
@@ -86,7 +80,7 @@ const getReviewsForProject = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, reviews, "Project reviews fetched successfully"));
+    .json(new ApiResponse(200, "Project reviews fetched successfully", reviews));
 });
 
 const getReviewsForUser = asyncHandler(async (req, res) => {
@@ -100,7 +94,7 @@ const getReviewsForUser = asyncHandler(async (req, res) => {
     .populate("reviewer", "fullname avatar")
     .populate("project", "title");
 
-  return res.status(200).json(new ApiResponse(200, reviews, "User reviews fetched successfully"));
+  return res.status(200).json(new ApiResponse(200, "User reviews fetched successfully", reviews));
 });
 
 export { createReview, getReviewsForProject, getReviewsForUser };

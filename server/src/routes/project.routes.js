@@ -11,12 +11,15 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.use(verifyJWT);
+// Public Routes
+router.get("/", getAllProjects);
+router.get("/:projectId", getProjectById);
+router.get("/client/:clientId", getProjectsByClient);
 
-router.route("/").post(createProject).get(getAllProjects);
-
-router.route("/:projectId").get(getProjectById).patch(updateProject).delete(deleteProject);
-
-router.route("/client/:clientId").get(getProjectsByClient);
+// Authenticated Routes (require a valid JWT)
+// Applying verifyJWT middleware to all routes that modify project data
+router.post("/", verifyJWT, createProject);
+router.patch("/:projectId", verifyJWT, updateProject);
+router.delete("/:projectId", verifyJWT, deleteProject);
 
 export default router;

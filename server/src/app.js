@@ -46,37 +46,23 @@ app.use(express.static("public"));
 app.use(cookieParser());
 app.use("/peerjs", peerServer);
 
-// Existing route imports
-import studentRoutes from "./routes/student.routes.js";
-import businessRoutes from "./routes/business.routes.js";
+import userRouter from "./routes/user.routes.js";
 import healthcheckRouter from "./routes/healthcheck.routes.js";
 import paymentRouter from "./routes/payment.routes.js";
-import agoraRouter from "./routes/agora.routes.js";
 import chatRoutes from "./routes/chat.routes.js";
-import projectRouter from "./routes/project.routes.js";
-import proposalRouter from "./routes/proposal.routes.js";
-import contractRouter from "./routes/contract.routes.js";
-import reviewRouter from "./routes/review.routes.js";
+import projectRoutes from "./routes/project.routes.js";
+import proposalRoutes from "./routes/proposal.routes.js";
+import reviewRoutes from "./routes/review.routes.js";
+import contractRoutes from "./routes/contract.routes.js";
 
-// New route imports for threads and topics
-import threadRoutes from "./routes/thread.routes.js";
-import topicRoutes from "./routes/topic.routes.js";
-
-// Existing route mounting
-app.use("/api/v1/users/student", studentRoutes);
-app.use("/api/v1/users/business", businessRoutes);
+app.use("/api/v1/users", userRouter);
 app.use("/api/v1/healthcheck", healthcheckRouter);
 app.use("/api/v1/payments", paymentRouter);
-app.use("/api/v1/agora", agoraRouter);
 app.use("/api/v1/chat", chatRoutes);
-app.use("/api/v1/projects", projectRouter);
-app.use("/api/v1/proposals", proposalRouter);
-app.use("/api/v1/contracts", contractRouter);
-app.use("/api/v1/reviews", reviewRouter);
-
-// Mount the new routes for threads and topics
-app.use("/api/v1/threads", threadRoutes);
-app.use("/api/v1/topics", topicRoutes);
+app.use("/api/v1/projects", projectRoutes);
+app.use("/api/v1/proposals", proposalRoutes);
+app.use("/api/v1/reviews", reviewRoutes);
+app.use("/api/v1/contracts", contractRoutes);
 
 io.on("connection", (socket) => {
   console.log(`Socket.IO client connected: ${socket.id}`);

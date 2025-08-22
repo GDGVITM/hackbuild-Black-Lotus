@@ -1,234 +1,379 @@
 [
   {
+    "client": "66a858e376a917e750692795",
     "title": "Frontend Developer",
-    "company": "Google",
-    "rate": "$120/hr",
-    "skills_required": ["React", "JavaScript", "UI/UX"],
     "description": "Develop and maintain user interfaces for scalable web apps.",
-    "link": "#"
+    "skillsRequired": [
+      "React",
+      "JavaScript",
+      "UI/UX"
+    ],
+    "budget": 120,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Backend Engineer",
-    "company": "Airbnb",
-    "rate": "$140/hr",
-    "skills_required": ["Python", "Django", "REST APIs"],
     "description": "Design and optimize APIs and databases for freelance apps.",
-    "link": "#"
+    "skillsRequired": [
+      "Python",
+      "Django",
+      "REST APIs"
+    ],
+    "budget": 140,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "UI/UX Designer",
-    "company": "Figma",
-    "rate": "$100/hr",
-    "skills_required": ["Figma", "Wireframing", "Prototyping"],
     "description": "Design intuitive interfaces and collaborate with dev teams.",
-    "link": "#"
+    "skillsRequired": [
+      "Figma",
+      "Wireframing",
+      "Prototyping"
+    ],
+    "budget": 100,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Data Engineer",
-    "company": "Spotify",
-    "rate": "$135/hr",
-    "skills_required": ["SQL", "ETL", "BigQuery"],
     "description": "Build scalable pipelines and optimize data storage solutions.",
-    "link": "#"
+    "skillsRequired": [
+      "SQL",
+      "ETL",
+      "BigQuery"
+    ],
+    "budget": 135,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Machine Learning Engineer",
-    "company": "OpenAI",
-    "rate": "$160/hr",
-    "skills_required": ["Python", "TensorFlow", "LLMs"],
     "description": "Train and deploy ML models for production environments.",
-    "link": "#"
+    "skillsRequired": [
+      "Python",
+      "TensorFlow",
+      "LLMs"
+    ],
+    "budget": 160,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "DevOps Engineer",
-    "company": "Netflix",
-    "rate": "$145/hr",
-    "skills_required": ["AWS", "Docker", "Kubernetes"],
     "description": "Maintain CI/CD pipelines and optimize infrastructure reliability.",
-    "link": "#"
+    "skillsRequired": [
+      "AWS",
+      "Docker",
+      "Kubernetes"
+    ],
+    "budget": 145,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Full Stack Developer",
-    "company": "Meta",
-    "rate": "$150/hr",
-    "skills_required": ["Node.js", "React", "GraphQL"],
     "description": "Build end-to-end web applications with seamless integrations.",
-    "link": "#"
+    "skillsRequired": [
+      "Node.js",
+      "React",
+      "GraphQL"
+    ],
+    "budget": 150,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Product Manager",
-    "company": "Amazon",
-    "rate": "$130/hr",
-    "skills_required": ["Agile", "Scrum", "Roadmapping"],
     "description": "Lead product strategy and coordinate between engineering teams.",
-    "link": "#"
+    "skillsRequired": [
+      "Agile",
+      "Scrum",
+      "Roadmapping"
+    ],
+    "budget": 130,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Cloud Engineer",
-    "company": "Microsoft",
-    "rate": "$140/hr",
-    "skills_required": ["Azure", "Terraform", "Networking"],
     "description": "Design cloud-native solutions and ensure high availability.",
-    "link": "#"
+    "skillsRequired": [
+      "Azure",
+      "Terraform",
+      "Networking"
+    ],
+    "budget": 140,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Security Engineer",
-    "company": "Cisco",
-    "rate": "$150/hr",
-    "skills_required": ["Penetration Testing", "Firewalls", "SIEM"],
     "description": "Secure applications, networks, and sensitive infrastructure.",
-    "link": "#"
+    "skillsRequired": [
+      "Penetration Testing",
+      "Firewalls",
+      "SIEM"
+    ],
+    "budget": 150,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "AI Research Scientist",
-    "company": "DeepMind",
-    "rate": "$170/hr",
-    "skills_required": ["Python", "PyTorch", "Deep Learning"],
     "description": "Conduct research on cutting-edge AI and reinforcement learning.",
-    "link": "#"
+    "skillsRequired": [
+      "Python",
+      "PyTorch",
+      "Deep Learning"
+    ],
+    "budget": 170,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Blockchain Developer",
-    "company": "Coinbase",
-    "rate": "$155/hr",
-    "skills_required": ["Solidity", "Ethereum", "Smart Contracts"],
     "description": "Build decentralized applications and audit smart contracts.",
-    "link": "#"
+    "skillsRequired": [
+      "Solidity",
+      "Ethereum",
+      "Smart Contracts"
+    ],
+    "budget": 155,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Mobile App Developer",
-    "company": "Uber",
-    "rate": "$125/hr",
-    "skills_required": ["Swift", "Kotlin", "React Native"],
     "description": "Develop scalable apps for iOS and Android platforms.",
-    "link": "#"
+    "skillsRequired": [
+      "Swift",
+      "Kotlin",
+      "React Native"
+    ],
+    "budget": 125,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Data Scientist",
-    "company": "IBM",
-    "rate": "$145/hr",
-    "skills_required": ["Python", "Pandas", "Machine Learning"],
     "description": "Analyze data and provide actionable business insights.",
-    "link": "#"
+    "skillsRequired": [
+      "Python",
+      "Pandas",
+      "Machine Learning"
+    ],
+    "budget": 145,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Game Developer",
-    "company": "Epic Games",
-    "rate": "$135/hr",
-    "skills_required": ["C++", "Unreal Engine", "3D Graphics"],
     "description": "Develop and optimize real-time game features and engines.",
-    "link": "#"
+    "skillsRequired": [
+      "C++",
+      "Unreal Engine",
+      "3D Graphics"
+    ],
+    "budget": 135,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Embedded Systems Engineer",
-    "company": "Tesla",
-    "rate": "$150/hr",
-    "skills_required": ["C", "RTOS", "Microcontrollers"],
     "description": "Work on hardware-software integration for autonomous vehicles.",
-    "link": "#"
+    "skillsRequired": [
+      "C",
+      "RTOS",
+      "Microcontrollers"
+    ],
+    "budget": 150,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "AR/VR Developer",
-    "company": "Apple",
-    "rate": "$160/hr",
-    "skills_required": ["Unity", "ARKit", "C#"],
     "description": "Design immersive AR/VR experiences for Apple devices.",
-    "link": "#"
+    "skillsRequired": [
+      "Unity",
+      "ARKit",
+      "C#"
+    ],
+    "budget": 160,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Site Reliability Engineer",
-    "company": "Twitter",
-    "rate": "$145/hr",
-    "skills_required": ["Linux", "Monitoring", "Kubernetes"],
     "description": "Ensure uptime and performance of critical infrastructure.",
-    "link": "#"
+    "skillsRequired": [
+      "Linux",
+      "Monitoring",
+      "Kubernetes"
+    ],
+    "budget": 145,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Marketing Analyst",
-    "company": "Adobe",
-    "rate": "$110/hr",
-    "skills_required": ["Google Analytics", "SEO", "SQL"],
     "description": "Track and optimize marketing campaign performance.",
-    "link": "#"
+    "skillsRequired": [
+      "Google Analytics",
+      "SEO",
+      "SQL"
+    ],
+    "budget": 110,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Business Analyst",
-    "company": "Accenture",
-    "rate": "$115/hr",
-    "skills_required": ["Excel", "Tableau", "Stakeholder Management"],
     "description": "Analyze client requirements and propose data-driven solutions.",
-    "link": "#"
+    "skillsRequired": [
+      "Excel",
+      "Tableau",
+      "Stakeholder Management"
+    ],
+    "budget": 115,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Game Designer",
-    "company": "Nintendo",
-    "rate": "$130/hr",
-    "skills_required": ["Game Design", "Storyboarding", "Prototyping"],
     "description": "Design engaging gameplay experiences for new titles.",
-    "link": "#"
+    "skillsRequired": [
+      "Game Design",
+      "Storyboarding",
+      "Prototyping"
+    ],
+    "budget": 130,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Network Engineer",
-    "company": "Juniper Networks",
-    "rate": "$120/hr",
-    "skills_required": ["Networking", "Cisco IOS", "Firewalls"],
     "description": "Manage and optimize enterprise-scale network systems.",
-    "link": "#"
+    "skillsRequired": [
+      "Networking",
+      "Cisco IOS",
+      "Firewalls"
+    ],
+    "budget": 120,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Robotics Engineer",
-    "company": "Boston Dynamics",
-    "rate": "$155/hr",
-    "skills_required": ["C++", "ROS", "Computer Vision"],
     "description": "Design and program intelligent robots for real-world tasks.",
-    "link": "#"
+    "skillsRequired": [
+      "C++",
+      "ROS",
+      "Computer Vision"
+    ],
+    "budget": 155,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "QA Automation Engineer",
-    "company": "Atlassian",
-    "rate": "$125/hr",
-    "skills_required": ["Selenium", "Java", "Cypress"],
     "description": "Develop automated test frameworks and ensure product quality.",
-    "link": "#"
+    "skillsRequired": [
+      "Selenium",
+      "Java",
+      "Cypress"
+    ],
+    "budget": 125,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Technical Writer",
-    "company": "Oracle",
-    "rate": "$95/hr",
-    "skills_required": ["Documentation", "APIs", "Markdown"],
     "description": "Create developer documentation and API references.",
-    "link": "#"
+    "skillsRequired": [
+      "Documentation",
+      "APIs",
+      "Markdown"
+    ],
+    "budget": 95,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Cybersecurity Analyst",
-    "company": "Palantir",
-    "rate": "$140/hr",
-    "skills_required": ["SOC", "Threat Detection", "SIEM"],
     "description": "Monitor security incidents and build defense strategies.",
-    "link": "#"
+    "skillsRequired": [
+      "SOC",
+      "Threat Detection",
+      "SIEM"
+    ],
+    "budget": 140,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Solutions Architect",
-    "company": "Salesforce",
-    "rate": "$150/hr",
-    "skills_required": ["Cloud", "APIs", "Integration"],
     "description": "Design enterprise-level solutions and integrations.",
-    "link": "#"
+    "skillsRequired": [
+      "Cloud",
+      "APIs",
+      "Integration"
+    ],
+    "budget": 150,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Research Intern (AI)",
-    "company": "MIT",
-    "rate": "$60/hr",
-    "skills_required": ["Python", "ML", "Data Analysis"],
     "description": "Assist researchers in building AI-driven solutions.",
-    "link": "#"
+    "skillsRequired": [
+      "Python",
+      "ML",
+      "Data Analysis"
+    ],
+    "budget": 60,
+    "status": "open",
+    "proposals": []
   },
   {
+    "client": "66a858e376a917e750692795",
     "title": "Creative Director",
-    "company": "Adobe",
-    "rate": "$145/hr",
-    "skills_required": ["Design", "Branding", "Leadership"],
     "description": "Lead creative direction for design and branding projects.",
-    "link": "#"
+    "skillsRequired": [
+      "Design",
+      "Branding",
+      "Leadership"
+    ],
+    "budget": 145,
+    "status": "open",
+    "proposals": []
   }
 ]

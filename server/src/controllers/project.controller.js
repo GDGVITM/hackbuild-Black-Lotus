@@ -12,18 +12,17 @@ const createProject = asyncHandler(async (req, res) => {
       (field) => !field || (typeof field === "string" && field.trim() === "")
     )
   ) {
-    throw new ApiError("Title, description, and budget are required", 400);
+    throw new ApiError(400, "Title, description, and budget are required");
   }
 
   if (!skillsRequired || skillsRequired.length === 0) {
-    throw new ApiError("At least one skill is required", 400);
+    throw new ApiError(400, "At least one skill is required");
   }
 
   const client = req.user;
 
-  // Updated role check to "business" to align with the BusinessUser model
-  if (client.role !== "business") {
-    throw new ApiError("Only business users can post projects", 403);
+  if (client.role !== "client") {
+    throw new ApiError(403, "Only business users can post projects");
   }
 
   const project = await Project.create({
@@ -36,7 +35,7 @@ const createProject = asyncHandler(async (req, res) => {
   });
 
   if (!project) {
-    throw new ApiError("Failed to create the project", 500);
+    throw new ApiError(500, "Failed to create the project");
   }
 
   return res.status(201).json(new ApiResponse(201, "Project created successfully", project));
@@ -46,13 +45,13 @@ const getProjectById = asyncHandler(async (req, res) => {
   const { projectId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(projectId)) {
-    throw new ApiError("Invalid project ID", 400);
+    throw new ApiError(400, "Invalid project ID");
   }
 
   const project = await Project.findById(projectId).populate("client", "fullname avatar");
 
   if (!project) {
-    throw new ApiError("Project not found", 404);
+    throw new ApiError(404, "Project not found");
   }
 
   return res.status(200).json(new ApiResponse(200, "Project fetched successfully", project));
@@ -63,17 +62,17 @@ const updateProject = asyncHandler(async (req, res) => {
   const { title, description, skillsRequired, budget, deadline, status } = req.body;
 
   if (!mongoose.Types.ObjectId.isValid(projectId)) {
-    throw new ApiError("Invalid project ID", 400);
+    throw new ApiError(400, "Invalid project ID");
   }
 
   const project = await Project.findById(projectId);
 
   if (!project) {
-    throw new ApiError("Project not found", 404);
+    throw new ApiError(404, "Project not found");
   }
 
   if (project.client.toString() !== req.user._id.toString()) {
-    throw new ApiError("You are not authorized to update this project", 403);
+    throw new ApiError(403, "You are not authorized to update this project");
   }
 
   const updatedProject = await Project.findByIdAndUpdate(
@@ -98,17 +97,17 @@ const deleteProject = asyncHandler(async (req, res) => {
   const { projectId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(projectId)) {
-    throw new ApiError("Invalid project ID", 400);
+    throw new ApiError(400, "Invalid project ID");
   }
 
   const project = await Project.findById(projectId);
 
   if (!project) {
-    throw new ApiError("Project not found", 404);
+    throw new ApiError(404, "Project not found");
   }
 
   if (project.client.toString() !== req.user._id.toString()) {
-    throw new ApiError("You are not authorized to delete this project", 403);
+    throw new ApiError(403, "You are not authorized to delete this project");
   }
 
   await Project.findByIdAndDelete(projectId);
@@ -152,14 +151,10 @@ const getProjectsByClient = asyncHandler(async (req, res) => {
   const { clientId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(clientId)) {
-    throw new ApiError("Invalid client ID", 400);
+    throw new ApiError(400, "Invalid client ID");
   }
 
   const projects = await Project.find({ client: clientId });
-
-  if (!projects) {
-    throw new ApiError("No projects found for this client", 404);
-  }
 
   return res
     .status(200)

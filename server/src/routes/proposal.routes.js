@@ -10,16 +10,10 @@ import { verifyJWT } from "../middlewares/auth.middleware.js";
 
 const router = Router();
 
-router.use(verifyJWT);
-
-router.route("/:projectId").post(createProposal);
-
-router.route("/project/:projectId").get(getProposalsForProject);
-
-router.route("/student/my-proposals").get(getProposalsByStudent);
-
-router.route("/:proposalId/status").patch(updateProposalStatus);
-
-router.route("/:proposalId").delete(withdrawProposal);
+router.post("/projects/:projectId/proposals", verifyJWT, createProposal);
+router.get("/projects/:projectId/proposals", verifyJWT, getProposalsForProject);
+router.get("/my-proposals", verifyJWT, getProposalsByStudent);
+router.patch("/:proposalId/status", verifyJWT, updateProposalStatus);
+router.delete("/:proposalId", verifyJWT, withdrawProposal);
 
 export default router;

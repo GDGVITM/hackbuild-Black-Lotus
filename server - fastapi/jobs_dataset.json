@@ -1,0 +1,379 @@
+[
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Frontend Developer",
+    "description": "Develop and maintain user interfaces for scalable web apps.",
+    "skillsRequired": [
+      "React",
+      "JavaScript",
+      "UI/UX"
+    ],
+    "budget": 120,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Backend Engineer",
+    "description": "Design and optimize APIs and databases for freelance apps.",
+    "skillsRequired": [
+      "Python",
+      "Django",
+      "REST APIs"
+    ],
+    "budget": 140,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "UI/UX Designer",
+    "description": "Design intuitive interfaces and collaborate with dev teams.",
+    "skillsRequired": [
+      "Figma",
+      "Wireframing",
+      "Prototyping"
+    ],
+    "budget": 100,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Data Engineer",
+    "description": "Build scalable pipelines and optimize data storage solutions.",
+    "skillsRequired": [
+      "SQL",
+      "ETL",
+      "BigQuery"
+    ],
+    "budget": 135,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Machine Learning Engineer",
+    "description": "Train and deploy ML models for production environments.",
+    "skillsRequired": [
+      "Python",
+      "TensorFlow",
+      "LLMs"
+    ],
+    "budget": 160,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "DevOps Engineer",
+    "description": "Maintain CI/CD pipelines and optimize infrastructure reliability.",
+    "skillsRequired": [
+      "AWS",
+      "Docker",
+      "Kubernetes"
+    ],
+    "budget": 145,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Full Stack Developer",
+    "description": "Build end-to-end web applications with seamless integrations.",
+    "skillsRequired": [
+      "Node.js",
+      "React",
+      "GraphQL"
+    ],
+    "budget": 150,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Product Manager",
+    "description": "Lead product strategy and coordinate between engineering teams.",
+    "skillsRequired": [
+      "Agile",
+      "Scrum",
+      "Roadmapping"
+    ],
+    "budget": 130,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Cloud Engineer",
+    "description": "Design cloud-native solutions and ensure high availability.",
+    "skillsRequired": [
+      "Azure",
+      "Terraform",
+      "Networking"
+    ],
+    "budget": 140,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Security Engineer",
+    "description": "Secure applications, networks, and sensitive infrastructure.",
+    "skillsRequired": [
+      "Penetration Testing",
+      "Firewalls",
+      "SIEM"
+    ],
+    "budget": 150,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "AI Research Scientist",
+    "description": "Conduct research on cutting-edge AI and reinforcement learning.",
+    "skillsRequired": [
+      "Python",
+      "PyTorch",
+      "Deep Learning"
+    ],
+    "budget": 170,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Blockchain Developer",
+    "description": "Build decentralized applications and audit smart contracts.",
+    "skillsRequired": [
+      "Solidity",
+      "Ethereum",
+      "Smart Contracts"
+    ],
+    "budget": 155,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Mobile App Developer",
+    "description": "Develop scalable apps for iOS and Android platforms.",
+    "skillsRequired": [
+      "Swift",
+      "Kotlin",
+      "React Native"
+    ],
+    "budget": 125,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Data Scientist",
+    "description": "Analyze data and provide actionable business insights.",
+    "skillsRequired": [
+      "Python",
+      "Pandas",
+      "Machine Learning"
+    ],
+    "budget": 145,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Game Developer",
+    "description": "Develop and optimize real-time game features and engines.",
+    "skillsRequired": [
+      "C++",
+      "Unreal Engine",
+      "3D Graphics"
+    ],
+    "budget": 135,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Embedded Systems Engineer",
+    "description": "Work on hardware-software integration for autonomous vehicles.",
+    "skillsRequired": [
+      "C",
+      "RTOS",
+      "Microcontrollers"
+    ],
+    "budget": 150,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "AR/VR Developer",
+    "description": "Design immersive AR/VR experiences for Apple devices.",
+    "skillsRequired": [
+      "Unity",
+      "ARKit",
+      "C#"
+    ],
+    "budget": 160,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Site Reliability Engineer",
+    "description": "Ensure uptime and performance of critical infrastructure.",
+    "skillsRequired": [
+      "Linux",
+      "Monitoring",
+      "Kubernetes"
+    ],
+    "budget": 145,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Marketing Analyst",
+    "description": "Track and optimize marketing campaign performance.",
+    "skillsRequired": [
+      "Google Analytics",
+      "SEO",
+      "SQL"
+    ],
+    "budget": 110,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Business Analyst",
+    "description": "Analyze client requirements and propose data-driven solutions.",
+    "skillsRequired": [
+      "Excel",
+      "Tableau",
+      "Stakeholder Management"
+    ],
+    "budget": 115,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Game Designer",
+    "description": "Design engaging gameplay experiences for new titles.",
+    "skillsRequired": [
+      "Game Design",
+      "Storyboarding",
+      "Prototyping"
+    ],
+    "budget": 130,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Network Engineer",
+    "description": "Manage and optimize enterprise-scale network systems.",
+    "skillsRequired": [
+      "Networking",
+      "Cisco IOS",
+      "Firewalls"
+    ],
+    "budget": 120,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Robotics Engineer",
+    "description": "Design and program intelligent robots for real-world tasks.",
+    "skillsRequired": [
+      "C++",
+      "ROS",
+      "Computer Vision"
+    ],
+    "budget": 155,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "QA Automation Engineer",
+    "description": "Develop automated test frameworks and ensure product quality.",
+    "skillsRequired": [
+      "Selenium",
+      "Java",
+      "Cypress"
+    ],
+    "budget": 125,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Technical Writer",
+    "description": "Create developer documentation and API references.",
+    "skillsRequired": [
+      "Documentation",
+      "APIs",
+      "Markdown"
+    ],
+    "budget": 95,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Cybersecurity Analyst",
+    "description": "Monitor security incidents and build defense strategies.",
+    "skillsRequired": [
+      "SOC",
+      "Threat Detection",
+      "SIEM"
+    ],
+    "budget": 140,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Solutions Architect",
+    "description": "Design enterprise-level solutions and integrations.",
+    "skillsRequired": [
+      "Cloud",
+      "APIs",
+      "Integration"
+    ],
+    "budget": 150,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Research Intern (AI)",
+    "description": "Assist researchers in building AI-driven solutions.",
+    "skillsRequired": [
+      "Python",
+      "ML",
+      "Data Analysis"
+    ],
+    "budget": 60,
+    "status": "open",
+    "proposals": []
+  },
+  {
+    "client": "66a858e376a917e750692795",
+    "title": "Creative Director",
+    "description": "Lead creative direction for design and branding projects.",
+    "skillsRequired": [
+      "Design",
+      "Branding",
+      "Leadership"
+    ],
+    "budget": 145,
+    "status": "open",
+    "proposals": []
+  }
+]

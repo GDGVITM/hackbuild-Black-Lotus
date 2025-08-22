@@ -4,7 +4,7 @@ const projectSchema = new Schema(
   {
     client: {
       type: Schema.Types.ObjectId,
-      ref: "BusinessUser",
+      ref: "User",
       required: true,
     },
     title: {

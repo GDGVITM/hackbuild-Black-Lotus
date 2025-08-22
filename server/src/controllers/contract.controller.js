@@ -30,7 +30,6 @@ const createContract = asyncHandler(async (req, res) => {
   }
 
   const totalValue = milestones.reduce((sum, milestone) => sum + milestone.amount, 0);
-
   if (totalValue !== project.budget) {
     throw new ApiError("Total milestone amounts must equal the project budget", 400);
   }
@@ -44,7 +43,7 @@ const createContract = asyncHandler(async (req, res) => {
     milestones,
   });
 
-  return res.status(201).json(new ApiResponse(201, contract, "Contract created successfully"));
+  return res.status(201).json(new ApiResponse(201, "Contract created successfully", contract));
 });
 
 const getContractById = asyncHandler(async (req, res) => {
@@ -70,7 +69,7 @@ const getContractById = asyncHandler(async (req, res) => {
     throw new ApiError("You are not authorized to view this contract", 403);
   }
 
-  return res.status(200).json(new ApiResponse(200, contract, "Contract fetched successfully"));
+  return res.status(200).json(new ApiResponse(200, "Contract fetched successfully", contract));
 });
 
 const getUserContracts = asyncHandler(async (req, res) => {
@@ -85,7 +84,7 @@ const getUserContracts = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, contracts, "User contracts fetched successfully"));
+    .json(new ApiResponse(200, "User contracts fetched successfully", contracts));
 });
 
 const updateMilestoneStatus = asyncHandler(async (req, res) => {
@@ -120,7 +119,7 @@ const updateMilestoneStatus = asyncHandler(async (req, res) => {
 
   await contract.save({ validateBeforeSave: false });
 
-  return res.status(200).json(new ApiResponse(200, contract, "Milestone status updated"));
+  return res.status(200).json(new ApiResponse(200, "Milestone status updated", contract));
 });
 
 const fundEscrow = asyncHandler(async (req, res) => {
@@ -140,12 +139,10 @@ const fundEscrow = asyncHandler(async (req, res) => {
     throw new ApiError("Only the client can fund the escrow", 403);
   }
 
-  // Corrected the status to a valid enum value from the schema.
-  // The original "funded" is not in the schema's allowed values ["complete", "held"].
   contract.escrowStatus = "held";
   await contract.save({ validateBeforeSave: false });
 
-  return res.status(200).json(new ApiResponse(200, contract, "Escrow funded successfully"));
+  return res.status(200).json(new ApiResponse(200, "Escrow funded successfully", contract));
 });
 
 export { createContract, getContractById, getUserContracts, updateMilestoneStatus, fundEscrow };

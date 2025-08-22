@@ -14,21 +14,24 @@ import Navbar from "@/components/blocks/Navbar/Navbar";
 import Footer from "@/components/Footer";
 import ChatBotButton from "@/components/ChatBotButton";
 import { Toaster } from "sonner";
-
-import NewProjectForm from "./components/NewProjectForm";
+import RegisterStudent from "@/pages/StudentSignUp";
+import RegisterBusiness from "@/pages/BusinessSignUp";
+import NewProjectForm from "@/pages/NewProjectForm";
 // PAGES
+import ContractsPage from "./pages/ContractsPage";
+import ChatPage from "./pages/ChatPage";
 import ManageProjects from "./pages/ManageProjects";
 import Login from "@/pages/Login";
-import SignUp from "@/pages/StudentSignUp";
-import BusinessSignUp from "@/pages/BusinessSignUp";
+
 import { HomePage } from "@/components/HomePage";
 import ContactPage from "@/pages/ContactUs";
 import UserProfile from "@/pages/UserProfile";
 import PaymentPage from "@/pages/PaymentPage";
-import Dashboard from "@/pages/StudentDashboard";
+import StudentDashboard from "@/pages/StudentDashboard";
 import CommunityDashboard from "./pages/Community";
 import FindWork from "./pages/FindWork";
-
+import JobDetails from "./pages/JobDetails";
+import JobListing from "./pages/JobListing";
 const hiddenLayoutRoutes = ["/login", "/signup"];
 
 const Layout = ({ children }) => {
@@ -53,18 +56,27 @@ function App() {
       <Router>
         <Layout>
           <Routes>
-            <Route path="/business-signup" element={<BusinessSignUp />} />
+            <Route path="/signup-student" element={<RegisterStudent />} />
+            <Route path="/signup-business" element={<RegisterBusiness />} />
             <Route path="/" element={<HomePage />} />
             <Route path="/login" element={<Login />} />
-            <Route path="/signup" element={<SignUp />} />
+            <Route path="/job-listing" element={<JobListing />} />
+            <Route path="/job-posting" element={<NewProjectForm />} />
+            <Route path="/job/:id" element={<JobDetails />} />
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/user-profile" element={<UserProfile />} />
             <Route path="/payment" element={<PaymentPage />} />
+            <Route path="/payment/:roomId" element={<PaymentPage />} />
             <Route path="/find-work" element={<FindWork />} />
-            <Route path="/student/dashboard" element={<Dashboard />} />
-            <Route path="/business/dashboard" element={<BusinessDashboard />} />
+            <Route path="/dashboard-student" element={<StudentDashboard />} />
+            <Route path="/dashboard-business" element={<BusinessDashboard />} />
             <Route path="/community" element={<CommunityDashboard />} />
             <Route path="/findwork" element={<FindWork />} />
+            <Route path="/post-project" element={<NewProjectForm />} />
+            <Route path="/manage-projects" element={<ManageProjects />} />
+            <Route path="/chat" element={<ChatPage />} />
+            <Route path="/chat/:roomId?" element={<ChatPage />} />
+            <Route path="/contracts" element={<ContractsPage />} />
           </Routes>
         </Layout>
       </Router>

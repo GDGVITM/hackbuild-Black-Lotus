@@ -24,14 +24,16 @@ const contractSchema = new Schema(
   {
     client: {
       type: Schema.Types.ObjectId,
-      ref: "BusinessUser",
+      ref: "User",
       required: true,
     },
-    student: {
-      type: Schema.Types.ObjectId,
-      ref: "StudentUser",
-      required: true,
-    },
+    student: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+        required: true,
+      },
+    ],
     project: {
       type: Schema.Types.ObjectId,
       ref: "Project",

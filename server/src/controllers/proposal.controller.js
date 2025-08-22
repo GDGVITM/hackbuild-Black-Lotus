@@ -3,7 +3,7 @@ import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
 import { Proposal } from "../models/proposal.model.js";
 import { Project } from "../models/project.model.js";
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 const createProposal = asyncHandler(async (req, res) => {
   const { projectId } = req.params;
@@ -11,25 +11,25 @@ const createProposal = asyncHandler(async (req, res) => {
   const student = req.user;
 
   if (student.role !== "student") {
-    throw new ApiError("Only students can submit proposals", 403);
+    throw new ApiError(403, "Only students can submit proposals");
   }
 
   if (!mongoose.Types.ObjectId.isValid(projectId)) {
-    throw new ApiError("Invalid project ID", 400);
+    throw new ApiError(400, "Invalid project ID");
   }
 
   if ([coverLetter, proposedRate, estimatedTimeline].some((field) => !field)) {
-    throw new ApiError("All fields are required", 400);
+    throw new ApiError(400, "All fields are required");
   }
 
   const project = await Project.findById(projectId);
   if (!project) {
-    throw new ApiError("Project not found", 404);
+    throw new ApiError(404, "Project not found");
   }
 
   const existingProposal = await Proposal.findOne({ student: student._id, project: projectId });
   if (existingProposal) {
-    throw new ApiError("You have already submitted a proposal for this project", 409);
+    throw new ApiError(409, "You have already submitted a proposal for this project");
   }
 
   const proposal = await Proposal.create({
@@ -43,23 +43,23 @@ const createProposal = asyncHandler(async (req, res) => {
   project.proposals.push(proposal._id);
   await project.save();
 
-  return res.status(201).json(new ApiResponse(201, proposal, "Proposal submitted successfully"));
+  return res.status(201).json(new ApiResponse(201, "Proposal submitted successfully", proposal));
 });
 
 const getProposalsForProject = asyncHandler(async (req, res) => {
   const { projectId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(projectId)) {
-    throw new ApiError("Invalid project ID", 400);
+    throw new ApiError(400, "Invalid project ID");
   }
 
   const project = await Project.findById(projectId);
   if (!project) {
-    throw new ApiError("Project not found", 404);
+    throw new ApiError(404, "Project not found");
   }
 
   if (project.client.toString() !== req.user._id.toString()) {
-    throw new ApiError("You are not authorized to view proposals for this project", 403);
+    throw new ApiError(403, "You are not authorized to view proposals for this project");
   }
 
   const proposals = await Proposal.find({ project: projectId }).populate(
@@ -67,7 +67,7 @@ const getProposalsForProject = asyncHandler(async (req, res) => {
     "fullname avatar skills"
   );
 
-  return res.status(200).json(new ApiResponse(200, proposals, "Proposals fetched successfully"));
+  return res.status(200).json(new ApiResponse(200, "Proposals fetched successfully", proposals));
 });
 
 const getProposalsByStudent = asyncHandler(async (req, res) => {
@@ -77,7 +77,7 @@ const getProposalsByStudent = asyncHandler(async (req, res) => {
 
   return res
     .status(200)
-    .json(new ApiResponse(200, proposals, "Your proposals fetched successfully"));
+    .json(new ApiResponse(200, "Your proposals fetched successfully", proposals));
 });
 
 const updateProposalStatus = asyncHandler(async (req, res) => {
@@ -85,21 +85,21 @@ const updateProposalStatus = asyncHandler(async (req, res) => {
   const { status } = req.body;
 
   if (!["accepted", "rejected"].includes(status)) {
-    throw new ApiError("Invalid status", 400);
+    throw new ApiError(400, "Invalid status");
   }
 
   if (!mongoose.Types.ObjectId.isValid(proposalId)) {
-    throw new ApiError("Invalid proposal ID", 400);
+    throw new ApiError(400, "Invalid proposal ID");
   }
 
   const proposal = await Proposal.findById(proposalId);
   if (!proposal) {
-    throw new ApiError("Proposal not found", 404);
+    throw new ApiError(404, "Proposal not found");
   }
 
   const project = await Project.findById(proposal.project);
   if (project.client.toString() !== req.user._id.toString()) {
-    throw new ApiError("You are not authorized to update this proposal", 403);
+    throw new ApiError(403, "You are not authorized to update this proposal");
   }
 
   proposal.status = status;
@@ -110,23 +110,23 @@ const updateProposalStatus = asyncHandler(async (req, res) => {
     await project.save({ validateBeforeSave: false });
   }
 
-  return res.status(200).json(new ApiResponse(200, proposal, `Proposal has been ${status}`));
+  return res.status(200).json(new ApiResponse(200, `Proposal has been ${status}`, proposal));
 });
 
 const withdrawProposal = asyncHandler(async (req, res) => {
   const { proposalId } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(proposalId)) {
-    throw new ApiError("Invalid proposal ID", 400);
+    throw new ApiError(400, "Invalid proposal ID");
   }
 
   const proposal = await Proposal.findById(proposalId);
   if (!proposal) {
-    throw new ApiError("Proposal not found", 404);
+    throw new ApiError(404, "Proposal not found");
   }
 
   if (proposal.student.toString() !== req.user._id.toString()) {
-    throw new ApiError("You are not authorized to withdraw this proposal", 403);
+    throw new ApiError(403, "You are not authorized to withdraw this proposal");
   }
 
   await Project.findByIdAndUpdate(proposal.project, {
@@ -135,7 +135,7 @@ const withdrawProposal = asyncHandler(async (req, res) => {
 
   await Proposal.findByIdAndDelete(proposalId);
 
-  return res.status(200).json(new ApiResponse(200, {}, "Proposal withdrawn successfully"));
+  return res.status(200).json(new ApiResponse(200, "Proposal withdrawn successfully", {}));
 });
 
 export {

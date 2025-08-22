@@ -30,6 +30,15 @@ const Navbar = () => {
     }
   };
 
+  const getDashboardPath = () => {
+    switch (user.role) {
+      case "student":
+        return "/dashboard-student";
+      case "client":
+        return "/dashboard-business";
+    }
+  };
+
   return (
     <header>
       <nav className="h-16 bg-background border-b">
@@ -44,26 +53,18 @@ const Navbar = () => {
                 <DropdownMenuTrigger asChild>
                   <Avatar className="h-9 w-9 cursor-pointer ring-2 ring-muted-foreground/20">
                     <AvatarImage src={user.avatar} alt={user.fullname} />
-                    <AvatarFallback>
-                      {user.fullname?.charAt(0).toUpperCase() || "U"}
-                    </AvatarFallback>
+                    <AvatarFallback>{user.fullname?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="end"
                   className="w-48 rounded-xl shadow-md border bg-background"
                 >
-                  <DropdownMenuItem
-                    onClick={() => navigate(`/${user.role}/dashboard`)}
-                    className="gap-2"
-                  >
+                  <DropdownMenuItem onClick={() => navigate(getDashboardPath())} className="gap-2">
                     <LayoutDashboard className="h-4 w-4" />
                     Dashboard
                   </DropdownMenuItem>
-                  <DropdownMenuItem
-                    onClick={() => navigate("/settings")}
-                    className="gap-2"
-                  >
+                  <DropdownMenuItem onClick={() => navigate("/settings")} className="gap-2">
                     <Settings className="h-4 w-4" />
                     Settings
                   </DropdownMenuItem>
