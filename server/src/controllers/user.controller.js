@@ -259,13 +259,13 @@ const updateCurrentUser = asyncHandler(async (req, res) => {
 });
 
 const getUserProfile = asyncHandler(async (req, res) => {
-  const { email } = req.params;
+  const { id } = req.params;
 
-  if (!email) {
-    throw new ApiError("User email is required", 400);
+  if (!id) {
+    throw new ApiError("User id is required", 400);
   }
 
-  const user = await User.findOne({ email }).select("-password -refreshToken");
+  const user = await User.findById(id).select("-password -refreshToken");
 
   if (!user) {
     throw new ApiError("User not found", 404);
@@ -273,7 +273,6 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
   return res.status(200).json(new ApiResponse(200, "User profile fetched successfully", user));
 });
-
 export {
   registerStudent,
   registerClient,

@@ -30,6 +30,6 @@ router.get("/me", verifyJWT, getCurrentUser);
 router.patch("/me", verifyJWT, updateCurrentUser);
 
 // This route can remain public or be protected depending on your app's logic
-router.get("/profile/:email", getUserProfile);
+router.get("/:id", getUserProfile);
 
 export default router;

@@ -65,7 +65,7 @@ function App() {
             <Route path="/job-posting" element={<NewProjectForm />} />
             <Route path="/job/:id" element={<JobDetails />} />
             <Route path="/contact" element={<ContactPage />} />
-            <Route path="/user-profile" element={<UserProfile />} />
+
             <Route path="/payment" element={<PaymentPage />} />
             <Route path="/payment/:roomId" element={<PaymentPage />} />
             <Route path="/find-work" element={<FindWork />} />
@@ -78,6 +78,7 @@ function App() {
             <Route path="/chat" element={<ChatPage />} />
             <Route path="/chat/:roomId?" element={<ChatPage />} />
             <Route path="/contracts" element={<ContractsPage />} />
+            <Route path="/user-profile/:id" element={<UserProfile />} />
           </Routes>
         </Layout>
       </Router>
