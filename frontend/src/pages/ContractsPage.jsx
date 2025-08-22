@@ -102,7 +102,7 @@ const ContractsPage = () => {
                     <div className="mt-2 flex justify-between items-center">
                       <Button variant="outline" size="sm" asChild>
                         <a
-                          href="/docs/nda.pdf"
+                          href="/docs/NDA.pdf"
                           target="_blank"
                           rel="noopener noreferrer"
                         >
@@ -132,7 +132,7 @@ const ContractsPage = () => {
                     <div className="mt-2 flex justify-between items-center">
                       <Button variant="outline" size="sm" asChild>
                         <a
-                          href="/docs/gst.pdf"
+                          href="/docs/GST.pdf"
                           target="_blank"
                           rel="noopener noreferrer"
                         >

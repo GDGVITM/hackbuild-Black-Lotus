@@ -12,9 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { useNavigate } from "react-router-dom";
 
-// NOTE: We are no longer using axiosInstance since we are using the fetch API.
-// import axiosInstance from "@/lib/axios";
-// import { useAuth } from "@/context/Auth/context";
+
 
 export default function ProposalModal({ isOpen, onClose, job }) {
   // NOTE: Assuming 'user' data is available from a different source or passed down
