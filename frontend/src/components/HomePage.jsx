@@ -1,13 +1,12 @@
-// src/components/Homepage.jsx
 import React from "react";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Shield, MessageCircle, Star } from "lucide-react";
+import { ShieldCheck, MessageCircle, Star, Award } from "lucide-react";
 
 // Custom component for the numbered badges
 const CardBadge = ({ number }) => {
   return (
-    <div className="flex items-center justify-center w-12 h-12 rounded-full bg-black text-white text-lg font-bold">
+    <div className="flex items-center justify-center w-12 h-12 rounded-full bg-teal-500 text-white text-lg font-bold">
       {number}
     </div>
   );
@@ -18,65 +17,52 @@ const StarRating = ({ rating }) => {
   const stars = Array.from({ length: 5 }, (_, index) => (
     <Star
       key={index}
-      className={`h-5 w-5 ${index < rating ? "text-yellow-400 fill-current" : "text-gray-300"}`}
+      className={`h-5 w-5 ${
+        index < rating ? "text-yellow-400 fill-current" : "text-gray-600"
+      }`}
     />
   ));
   return <div className="flex">{stars}</div>;
 };
 
-// SVG for the hero section background
-const HeroSVG = () => (
-  <svg
-    className="absolute inset-0 w-full h-full object-cover z-0 opacity-20"
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 1440 320"
-    preserveAspectRatio="none"
-  >
-    <defs>
-      <linearGradient id="blueGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" style={{ stopColor: "#a8c0ff", stopOpacity: 1 }} />
-        <stop offset="100%" style={{ stopColor: "#3f2b96", stopOpacity: 1 }} />
-      </linearGradient>
-      <linearGradient id="purpleGradient" x1="0%" y1="0%" x2="100%" y2="0%">
-        <stop offset="0%" style={{ stopColor: "#f7971e", stopOpacity: 1 }} />
-        <stop offset="100%" style={{ stopColor: "#ff2d2d", stopOpacity: 1 }} />
-      </linearGradient>
-    </defs>
-    <path
-      fill="url(#blueGradient)"
-      d="M0,96L60,106.7C120,117,240,139,360,133.3C480,128,600,96,720,101.3C840,107,960,149,1080,165.3C1200,181,1320,171,1380,165.3L1440,160L1440,320L1380,320C1320,320,1200,320,1080,320C960,320,840,320,720,320C600,320,480,320,360,320C240,320,120,320,60,320L0,320Z"
-    ></path>
-    <path
-      fill="url(#purpleGradient)"
-      d="M0,192L60,181.3C120,171,240,149,360,133.3C480,117,600,107,720,112C840,117,960,139,1080,138.7C1200,139,1320,117,1380,106.7L1440,96L1440,0L1380,0C1320,0,1200,0,1080,0C960,0,840,0,720,0C600,0,480,0,360,0C240,0,120,0,60,0L0,0Z"
-      transform="translate(0, 100)"
-    ></path>
-  </svg>
+// New component for the feature cards with icons
+const FeatureCard = ({ icon: Icon, title, description, color }) => (
+  <Card className="bg-slate-900 border-slate-700 shadow-xl p-6 flex flex-col items-center text-center transition-all duration-300 transform hover:scale-[1.02] border-none">
+    <div className={`p-4 rounded-full mb-4`} style={{ backgroundColor: color }}>
+      <Icon className="h-8 w-8 text-white" />
+    </div>
+    <CardContent className="p-0">
+      <h3 className="text-xl font-semibold text-slate-100 mb-2">{title}</h3>
+      <p className="text-slate-400 leading-relaxed">{description}</p>
+    </CardContent>
+  </Card>
 );
 
 // Main Homepage Component
 export function HomePage() {
   return (
-    <div className="min-h-screen bg-[#F9F7FB] font-sans">
+    <div className="min-h-screen bg-slate-950 font-sans text-slate-200">
       {/* -------------------- Main Content Wrapper -------------------- */}
       <main>
         {/* -------------------- Hero Section -------------------- */}
-        <section className="relative flex items-center justify-center min-h-screen overflow-hidden bg-gradient-to-br from-blue-100 to-purple-100 text-center px-6 py-20">
-          <HeroSVG />
-          <div className="z-10 max-w-3xl mx-auto relative">
-            <h1 className="text-5xl md:text-7xl font-extrabold text-gray-900 tracking-tight leading-tight mb-4">
-              <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-600 to-purple-600">
-                The Student Freelance Ecosystem.
+        <section className="relative flex flex-col items-center justify-center min-h-screen overflow-hidden text-center px-6 py-20 md:py-32">
+          <div className="z-10 max-w-4xl mx-auto relative">
+            <h1 className="text-5xl md:text-7xl font-extrabold text-white tracking-tight leading-tight mb-6">
+              <span className="bg-clip-text text-transparent bg-gradient-to-r from-teal-400 to-amber-500">
+                Unlock Your Potential,
               </span>
+              <br />
+              <span className="text-slate-100">Connect to Opportunity.</span>
             </h1>
-            <p className="text-xl md:text-2xl text-gray-800 mb-8 max-w-2xl mx-auto font-light">
-              Connect with businesses, build your portfolio, and get paid for
-              your skills—all in one place.
+            <p className="text-lg md:text-xl text-slate-400 mb-10 max-w-2xl mx-auto font-light leading-relaxed">
+              The platform where ambitious students connect with real-world
+              businesses to build portfolios, gain experience, and get paid for
+              their skills.
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Button
                 size="lg"
-                className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105"
+                className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-8 rounded-full shadow-lg transition-transform transform hover:scale-105"
                 onClick={() => (window.location.href = "/signup")}
               >
                 Join as Student
@@ -84,7 +70,7 @@ export function HomePage() {
               <Button
                 size="lg"
                 variant="outline"
-                className="text-blue-600 border-blue-600 bg-white hover:bg-blue-50 py-3 px-8 rounded-full font-bold shadow-lg transition-transform transform hover:scale-105"
+                className="text-white border-slate-700 bg-transparent hover:bg-slate-800 py-3 px-8 rounded-full font-bold shadow-lg transition-transform transform hover:scale-105"
                 onClick={() => (window.location.href = "/business-signup")}
               >
                 Join as Business
@@ -93,153 +79,167 @@ export function HomePage() {
           </div>
         </section>
 
-        {/* -------------------- "What Our Users Say" Section -------------------- */}
+        {/* -------------------- "How It Works" Section -------------------- */}
+        <section id="how-it-works" className="py-16 md:py-24 px-6 md:px-12">
+          <div className="container mx-auto max-w-5xl">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-center text-white tracking-tight">
+              How It Works
+            </h2>
+            <p className="text-lg text-slate-400 mb-16 text-center leading-relaxed">
+              A simple, three-step process for students and businesses alike.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
+              <Card className="bg-slate-900 border-slate-700 shadow-xl p-8 text-center transition-transform transform hover:scale-[1.02]">
+                <CardHeader className="p-0 flex justify-center mb-6">
+                  <CardBadge number="1" />
+                </CardHeader>
+                <CardContent className="p-0">
+                  <h3 className="text-xl font-semibold text-slate-100 mb-2">
+                    Connect & Collaborate
+                  </h3>
+                  <p className="text-slate-400 leading-relaxed">
+                    Businesses post projects and find talent, while students
+                    browse and submit proposals with their portfolio.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-slate-900 border-slate-700 shadow-xl p-8 text-center transition-transform transform hover:scale-[1.02]">
+                <CardHeader className="p-0 flex justify-center mb-6">
+                  <CardBadge number="2" />
+                </CardHeader>
+                <CardContent className="p-0">
+                  <h3 className="text-xl font-semibold text-slate-100 mb-2">
+                    Create & Deliver
+                  </h3>
+                  <p className="text-slate-400 leading-relaxed">
+                    Work together seamlessly using our integrated project
+                    management and communication tools to deliver great results.
+                  </p>
+                </CardContent>
+              </Card>
+
+              <Card className="bg-slate-900 border-slate-700 shadow-xl p-8 text-center transition-transform transform hover:scale-[1.02]">
+                <CardHeader className="p-0 flex justify-center mb-6">
+                  <CardBadge number="3" />
+                </CardHeader>
+                <CardContent className="p-0">
+                  <h3 className="text-xl font-semibold text-slate-100 mb-2">
+                    Get Paid Securely
+                  </h3>
+                  <p className="text-slate-400 leading-relaxed">
+                    Receive safe and secure payments for completed work via our
+                    reliable escrow system.
+                  </p>
+                </CardContent>
+              </Card>
+            </div>
+          </div>
+        </section>
+
+        {/* -------------------- Testimonials Section -------------------- */}
         <section
           id="testimonials"
-          className="py-16 md:pt-24 md:pb-12 px-6 md:px-12"
+          className="py-16 md:py-24 px-6 md:px-12 bg-slate-900"
         >
-          <div className="container mx-auto max-w-4xl">
-            <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center text-gray-800 tracking-tight">
+          <div className="container mx-auto max-w-5xl">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-center text-white tracking-tight">
               What Our Users Say
             </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-              <Card className="shadow-xl p-6 text-left border-2 border-transparent hover:border-blue-500 transition-all duration-300 transform hover:scale-[1.02]">
+            <p className="text-lg text-slate-400 mb-16 text-center leading-relaxed">
+              Hear from the students and businesses who are building the future
+              of freelance.
+            </p>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+              <Card className="bg-slate-950 border-slate-700 shadow-xl p-8 text-left transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl">
                 <CardContent className="p-0">
                   <StarRating rating={5} />
-                  <p className="text-gray-700 mt-4 leading-relaxed italic">
-                    "FreelanceHub helped me land my first web development
-                    project. The platform is so easy to use and the process is
-                    seamless from start to finish."
+                  <p className="text-slate-400 mt-6 leading-relaxed text-lg italic">
+                    "This platform is a game-changer! It helped me land my first
+                    web development project and build my portfolio with
+                    confidence. The process was so easy and the support was
+                    fantastic."
                   </p>
-                  <div className="mt-6">
-                    <p className="font-semibold text-gray-900">Sarah Chen</p>
-                    <p className="text-gray-500 text-sm">
+                  <div className="mt-8">
+                    <p className="font-semibold text-slate-200">Sarah Chen</p>
+                    <p className="text-slate-500 text-sm">
                       Computer Science Student
                     </p>
                   </div>
                 </CardContent>
               </Card>
 
-              <Card className="shadow-xl p-6 text-left border-2 border-transparent hover:border-blue-500 transition-all duration-300 transform hover:scale-[1.02]">
+              <Card className="bg-slate-950 border-slate-700 shadow-xl p-8 text-left transition-all duration-300 transform hover:-translate-y-1 hover:shadow-2xl">
                 <CardContent className="p-0">
                   <StarRating rating={5} />
-                  <p className="text-gray-700 mt-4 leading-relaxed italic">
-                    "We found amazing student developers who delivered quality
-                    work on time and within budget. This is now our go-to for
-                    finding top talent."
+                  <p className="text-slate-400 mt-6 leading-relaxed text-lg italic">
+                    "We found amazing, skilled student developers who delivered
+                    high-quality work on time and within budget. This is now our
+                    go-to for finding top talent."
                   </p>
-                  <div className="mt-6">
-                    <p className="font-semibold text-gray-900">
+                  <div className="mt-8">
+                    <p className="font-semibold text-slate-200">
                       Tech Startup Inc.
                     </p>
-                    <p className="text-gray-500 text-sm">Business</p>
+                    <p className="text-slate-500 text-sm">Business Partner</p>
                   </div>
                 </CardContent>
               </Card>
             </div>
           </div>
         </section>
-        {/* -------------------- "Why Choose FreelanceHub?" Section -------------------- */}
+        {/* -------------------- "Why Choose Us" Section -------------------- */}
         <section id="features" className="py-16 md:py-24 px-6 md:px-12">
-          <div className="container mx-auto max-w-4xl">
-            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-center text-gray-800 tracking-tight">
-              Why Choose FreelanceHub?
+          <div className="container mx-auto max-w-5xl">
+            <h2 className="text-4xl md:text-5xl font-bold mb-4 text-center text-white tracking-tight">
+              A Platform Built for You
             </h2>
-            <p className="text-lg text-gray-600 mb-12 text-center leading-relaxed">
+            <p className="text-lg text-slate-400 mb-16 text-center leading-relaxed">
               We provide the tools you need for seamless and secure freelance
               collaborations.
             </p>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Card className="shadow-lg p-6 flex flex-col items-center text-center">
-                <CardContent className="p-0">
-                  <h3 className="text-xl font-semibold">Secure Escrow</h3>
-                  <p className="text-gray-600 mt-2 leading-relaxed">
-                    Protected payments ensure both parties are satisfied before
-                    funds are released.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="shadow-lg p-6 flex flex-col items-center text-center">
-                <CardContent className="p-0">
-                  <h3 className="text-xl font-semibold">Built-in Chat</h3>
-                  <p className="text-gray-600 mt-2 leading-relaxed">
-                    Collaborate seamlessly with integrated messaging and file
-                    sharing.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="shadow-lg p-6 flex flex-col items-center text-center">
-                <CardContent className="p-0">
-                  <h3 className="text-xl font-semibold">Reputation System</h3>
-                  <p className="text-gray-600 mt-2 leading-relaxed">
-                    Build your reputation and trust through verified reviews and
-                    ratings.
-                  </p>
-                </CardContent>
-              </Card>
-            </div>
-          </div>
-        </section>
-        {/* -------------------- "How It Works" Section -------------------- */}
-        <section id="how-it-works" className="py-16 md:py-24 px-6 md:px-12">
-          <div className="container mx-auto max-w-4xl">
-            <h2 className="text-4xl md:text-5xl font-bold mb-12 text-center text-gray-800 tracking-tight">
-              How It Works
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              <Card className="shadow-lg p-6 text-center">
-                <CardHeader className="p-0 flex justify-center mb-4">
-                  <CardBadge number="1" />
-                </CardHeader>
-                <CardContent className="p-0">
-                  <h3 className="text-xl font-semibold">Post or Browse</h3>
-                  <p className="text-gray-600 mt-2 leading-relaxed">
-                    Businesses post jobs; students browse and submit proposals
-                    with portfolios.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="shadow-lg p-6 text-center">
-                <CardHeader className="p-0 flex justify-center mb-4">
-                  <CardBadge number="2" />
-                </CardHeader>
-                <CardContent className="p-0">
-                  <h3 className="text-xl font-semibold">Collaborate</h3>
-                  <p className="text-gray-600 mt-2 leading-relaxed">
-                    Work together using our integrated project management and
-                    communication tools.
-                  </p>
-                </CardContent>
-              </Card>
-
-              <Card className="shadow-lg p-6 text-center">
-                <CardHeader className="p-0 flex justify-center mb-4">
-                  <CardBadge number="3" />
-                </CardHeader>
-                <CardContent className="p-0">
-                  <h3 className="text-xl font-semibold">Get Paid</h3>
-                  <p className="text-gray-600 mt-2 leading-relaxed">
-                    Receive safe and secure payments for completed work via our
-                    escrow system.
-                  </p>
-                </CardContent>
-              </Card>
+              <FeatureCard
+                icon={ShieldCheck}
+                title="Secure Escrow"
+                description="Our protected payment system ensures both parties are satisfied before funds are released."
+                color="#0F172A"
+              />
+              <FeatureCard
+                icon={MessageCircle}
+                title="Integrated Chat"
+                description="Collaborate seamlessly with built-in messaging and file sharing for every project."
+                color="#14B8A6"
+              />
+              <FeatureCard
+                icon={Award}
+                title="Reputation System"
+                description="Build trust and showcase your skills through verified reviews and ratings on your profile."
+                color="#F59E0B"
+              />
             </div>
           </div>
         </section>
       </main>
 
-      {/* -------------------- "Ready to Get Started?" Footer -------------------- */}
-      <footer className="bg-gray-900 py-12 md:py-16 text-center text-white">
-        <h2 className="text-2xl md:text-3xl font-bold mb-6">
-          Ready to Get Started?
-        </h2>
-        <Button variant="secondary" size="lg">
-          Sign Up Now
-        </Button>
+      {/* -------------------- Footer Call-to-Action -------------------- */}
+      <footer className="bg-slate-800 py-20 md:py-24 text-center text-white relative">
+        <div className="relative z-10 container mx-auto px-6">
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">
+            Ready to Get Started?
+          </h2>
+          <p className="text-lg text-slate-400 mb-8 max-w-2xl mx-auto">
+            Join thousands of students and businesses building the future of
+            work, one project at a time.
+          </p>
+          <Button
+            size="lg"
+            className="bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-8 rounded-full shadow-xl transition-transform transform hover:scale-105"
+            onClick={() => (window.location.href = "/signup")}
+          >
+            Sign Up Now
+          </Button>
+        </div>
       </footer>
     </div>
   );

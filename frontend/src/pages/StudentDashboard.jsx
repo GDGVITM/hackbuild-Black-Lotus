@@ -110,7 +110,7 @@ export default function StudentDashboard() {
             </p>
           </div>
           <div className="flex items-center space-x-4">
-            <Link to="/jobs">
+            <Link to="/job-listing">
               <Button>Browse New Jobs</Button>
             </Link>
           </div>

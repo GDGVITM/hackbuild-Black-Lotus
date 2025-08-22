@@ -46,14 +46,9 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip";
 import { Badge } from "@/components/ui/badge";
-
-// A mock AuthContext to make the app runnable as a standalone immersive
-// In a real app, this would be an external context provider
-const AuthContext = createContext({ user: { fullname: "Guest" } });
-const useAuth = () => useContext(AuthContext);
+import { useAuth } from "@/context/AuthContext";
 
 // Utility functions for binary data conversion
-// Used for sending and receiving files over the PeerJS data channel
 function arrayBufferToBase64(buffer) {
   let binary = "";
   const bytes = new Uint8Array(buffer);
@@ -98,14 +93,12 @@ const VideoPlayer = React.memo(({ stream, username, isMuted }) => {
   );
 });
 
-// The main component for the video call logic
+// Main component for the video call logic
 const ChatPage = () => {
-  // Get room ID from URL parameters
   const { roomId: paramRoomId } = useParams();
   const navigate = useNavigate();
   const { user } = useAuth();
 
-  // State management for PeerJS and call data
   const [myPeer, setMyPeer] = useState(null);
   const [myPeerId, setMyPeerId] = useState("");
   const [localStream, setLocalStream] = useState(null);
@@ -115,40 +108,82 @@ const ChatPage = () => {
   const [isVideoMuted, setIsVideoMuted] = useState(false);
   const [username, setUsername] = useState(user?.fullname || "");
   const [isLobby, setIsLobby] = useState(true);
-  const [isCallActive, setIsCallActive] = useState(false); // New state to track if a video call is active
-  // New state for pinned messages
+  const [isCallActive, setIsCallActive] = useState(false);
   const [pinnedMessages, setPinnedMessages] = useState([]);
+  const [projectId, setProjectId] = useState(null); // New state for the project ID
+  const [isLoading, setIsLoading] = useState(true); // Loading state
 
-  // useRef to hold live connections to other peers. This avoids re-renders on every connection change.
   const connectionsRef = useRef({});
   const usernameRef = useRef(username);
 
-  // Update the ref whenever the username state changes
   useEffect(() => {
     usernameRef.current = username;
   }, [username]);
 
+  // --- NEW: Fetch user's project ID on mount and if user changes ---
+  useEffect(() => {
+    const fetchUserProject = async () => {
+      setIsLoading(true);
+      if (user && user.token) {
+        try {
+          const response = await fetch("/api/me", {
+            headers: {
+              Authorization: `Bearer ${user.token}`,
+            },
+          });
+          if (response.ok) {
+            const userData = await response.json();
+            if (userData.project) {
+              setProjectId(userData.project);
+              // If a project ID is found, automatically join the room
+              if (myPeer && myPeer.connect && !isLobby) {
+                handleJoinRoom(userData.project, myPeer);
+              }
+            } else {
+              toast.info("No active project found.", {
+                description:
+                  "You can create a new room or join an existing one.",
+              });
+            }
+          } else {
+            toast.error("Failed to fetch user data.");
+            console.error("Failed to fetch user data:", response.statusText);
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+          toast.error("Network error fetching user data.");
+        }
+      }
+      setIsLoading(false);
+    };
+
+    fetchUserProject();
+  }, [user, myPeer, isLobby]);
+  // --- END NEW ---
+
   // Initialize PeerJS on component mount
   useEffect(() => {
     try {
-      const peer = new Peer(undefined, {
-        host: "localhost",
-        port: 8001,
-        path: "/peerjs",
-      });
-      setMyPeer(peer);
-      peer.on("open", (id) => {
-        setMyPeerId(id);
-      });
-      peer.on("error", (err) => {
-        console.error("PeerJS Error:", err);
-        toast.error("Connection Error", {
-          description: "Could not connect to the peer server.",
+      if (!myPeer) {
+        const peer = new Peer(undefined, {
+          host: "localhost",
+          port: 8001,
+          path: "/peerjs",
         });
-      });
+        setMyPeer(peer);
+        peer.on("open", (id) => {
+          setMyPeerId(id);
+        });
+        peer.on("error", (err) => {
+          console.error("PeerJS Error:", err);
+          toast.error("Connection Error", {
+            description: "Could not connect to the peer server.",
+          });
+        });
+      }
       return () => {
-        if (peer && !peer.destroyed) {
-          peer.destroy();
+        if (myPeer && !myPeer.destroyed) {
+          myPeer.destroy();
         }
       };
     } catch (e) {
@@ -157,19 +192,17 @@ const ChatPage = () => {
         description: "Failed to initialize PeerJS. Check console for details.",
       });
     }
-  }, []);
+  }, [myPeer]);
 
-  // Callback to handle incoming data messages (chat and files)
+  // Handle incoming data messages
   const handleData = useCallback((data, peerId) => {
     try {
       const parsedData = JSON.parse(data);
       switch (parsedData.type) {
         case "chat":
-          // Add incoming chat message to the messages state
           setMessages((prev) => [...prev, parsedData.data]);
           break;
         case "file":
-          // Reconstruct the file from base64 data and create a URL
           const { fileName, fileType, fileData, sender } = parsedData.data;
           const arrayBuffer = base64ToArrayBuffer(fileData);
           const blob = new Blob([arrayBuffer], { type: fileType });
@@ -180,7 +213,6 @@ const ChatPage = () => {
           ]);
           break;
         case "username":
-          // Update the username for the remote stream
           setRemoteStreams((prev) => ({
             ...prev,
             [peerId]: { ...prev[peerId], username: parsedData.data },
@@ -194,7 +226,7 @@ const ChatPage = () => {
     }
   }, []);
 
-  // Callback to add a new remote stream to the state
+  // Add and remove remote streams
   const addRemoteStream = useCallback((peerId, stream, remoteUsername) => {
     setRemoteStreams((prev) => ({
       ...prev,
@@ -202,19 +234,17 @@ const ChatPage = () => {
     }));
   }, []);
 
-  // Callback to remove a remote stream from the state
   const removeRemoteStream = useCallback((peerId) => {
     setRemoteStreams((prev) => {
       const { [peerId]: _, ...rest } = prev;
       return rest;
     });
-    // Remove the connection from the ref
     delete connectionsRef.current[peerId];
   }, []);
 
-  // This function sets up the listeners and connections
+  // Setup listeners for incoming calls and connections
   useEffect(() => {
-    if (!myPeer) return;
+    if (!myPeer || !localStream) return;
 
     const handleNewConnection = (conn) => {
       connectionsRef.current[conn.peer] = conn;
@@ -227,7 +257,6 @@ const ChatPage = () => {
       });
     };
 
-    // Listener for incoming calls
     myPeer.on("call", (call) => {
       call.answer(localStream);
       call.on("stream", (remoteStream) => {
@@ -237,24 +266,22 @@ const ChatPage = () => {
       call.on("close", () => removeRemoteStream(call.peer));
     });
 
-    // Listener for incoming data channel connections
     myPeer.on("connection", handleNewConnection);
 
-    // Clean up listeners on component unmount
     return () => {
       myPeer.off("call");
       myPeer.off("connection");
     };
   }, [myPeer, localStream, handleData, addRemoteStream, removeRemoteStream]);
 
-  // Function to broadcast data to all connected peers
+  // Broadcast data to all connected peers
   const broadcastData = (data) => {
     Object.values(connectionsRef.current).forEach((conn) => {
       if (conn && conn.open) conn.send(data);
     });
   };
 
-  // Get user's media stream (camera and mic) and initiate video call
+  // Get user's media stream and initiate video call
   const startMediaAndCall = async () => {
     try {
       const stream = await navigator.mediaDevices.getUserMedia({
@@ -284,13 +311,12 @@ const ChatPage = () => {
 
   // Handle joining an existing room
   const handleJoinRoom = async (roomIdToJoin, peerInstance = myPeer) => {
-    if (!username) {
-      toast.error("Username required", {
-        description: "Enter a name to join.",
+    if (!username || !peerInstance) {
+      toast.error("Username and PeerJS instance required.", {
+        description: "Please reload the page if the issue persists.",
       });
       return;
     }
-    // Create a new data connection to the remote peer
     const conn = peerInstance.connect(roomIdToJoin);
     conn.on("data", (data) => handleData(data, conn.peer));
     conn.on("close", () => removeRemoteStream(conn.peer));
@@ -298,6 +324,15 @@ const ChatPage = () => {
       conn.send(
         JSON.stringify({ type: "username", data: usernameRef.current })
       );
+      toast.success("Joined room!", {
+        description: `Connected to room: ${roomIdToJoin}`,
+      });
+    });
+    conn.on("error", (err) => {
+      console.error("Connection error:", err);
+      toast.error("Failed to connect to room.", {
+        description: "The room ID may be invalid or the peer is offline.",
+      });
     });
     connectionsRef.current[conn.peer] = conn;
     setIsLobby(false);
@@ -311,27 +346,35 @@ const ChatPage = () => {
       });
       return;
     }
-    // Only navigate to the room, don't start the video call yet
+    if (!myPeerId) {
+      toast.error("Peer ID not ready.", {
+        description: "Please wait for the connection to be established.",
+      });
+      return;
+    }
+    // Set the projectId to the newly created room ID
+    setProjectId(myPeerId);
     setIsLobby(false);
     navigate(`/chat/${myPeerId}`);
+    toast.success("Room created!", {
+      description: `Share this ID: ${myPeerId}`,
+    });
   };
 
   // Handle leaving the call
   const handleLeave = () => {
-    // Stop all media tracks
     localStream?.getTracks().forEach((track) => track.stop());
-    // Close all data connections
     Object.values(connectionsRef.current).forEach((conn) => conn.close());
-    // Reset state
     setLocalStream(null);
     setRemoteStreams({});
     setMessages([]);
     setPinnedMessages([]);
     connectionsRef.current = {};
     setIsCallActive(false);
-    // Navigate back to the lobby
     navigate("/chat");
     setIsLobby(true);
+    // You might want to unset the projectId here as well
+    setProjectId(null);
   };
 
   // Toggle audio or video tracks on/off
@@ -359,9 +402,7 @@ const ChatPage = () => {
       type: "chat",
       data: { text: messageText, sender: username, id: Date.now() },
     };
-    // Broadcast the message to all connected peers
     broadcastData(JSON.stringify(messageData));
-    // Add the message to the local chat view
     setMessages((prev) => [...prev, { ...messageData.data, sender: "You" }]);
     e.target.reset();
   };
@@ -384,9 +425,7 @@ const ChatPage = () => {
           id: Date.now(),
         },
       };
-      // Broadcast the file data to all peers
       broadcastData(JSON.stringify(fileInfo));
-      // Add the file to the local chat view
       const url = URL.createObjectURL(
         new Blob([arrayBuffer], { type: file.type })
       );
@@ -398,48 +437,51 @@ const ChatPage = () => {
     reader.readAsArrayBuffer(file);
   };
 
-  // --- NEW: Pin/Unpin message function ---
+  // Pin/Unpin message function
   const handlePinMessage = (messageToPin) => {
     setPinnedMessages((prevPinned) => {
-      // Check if message is already pinned based on a unique identifier or a combination of content/sender
       const isPinned = prevPinned.some(
         (pinnedMsg) =>
           pinnedMsg.text === messageToPin.text &&
           pinnedMsg.sender === messageToPin.sender
       );
       if (isPinned) {
-        // Unpin if already pinned
         toast.info("Unpinned message");
         return prevPinned.filter(
           (msg) =>
             msg.text !== messageToPin.text || msg.sender !== messageToPin.sender
         );
       } else {
-        // Pin the message
         toast.success("Pinned message!");
         return [...prevPinned, messageToPin];
       }
     });
   };
-  // --- END NEW ---
 
-  // Handle navigation to the Contracts page
   const handleProceedToContracts = () => {
-    navigate(`/contracts?roomId=${paramRoomId}`);
+    // Use projectId state instead of paramRoomId
+    navigate(`/contracts?roomId=${projectId}`);
   };
 
-  // Handle navigation to the Payments page
   const handleProceedToPayments = () => {
-    if (paramRoomId) {
-      navigate(`/payment/${paramRoomId}`);
+    if (projectId) {
+      navigate(`/payment/${projectId}`);
     } else {
-      navigate(`/payment`);
+      toast.error("No active room to proceed to payments.");
     }
   };
 
   const [isCallMinimized, setIsCallMinimized] = useState(true);
 
-  // Render either the Lobby or the Call Screen based on state
+  // If loading, show a loading message
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center min-h-[80vh]">
+        <p>Loading user data...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background text-foreground font-sans antialiased">
       <div className="max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
@@ -450,7 +492,7 @@ const ChatPage = () => {
             myPeerId={myPeerId}
             handleCreateRoom={handleCreateRoom}
             handleJoinRoom={handleJoinRoom}
-            paramRoomId={paramRoomId}
+            paramRoomId={paramRoomId || projectId} // Use fetched projectId or URL param
           />
         ) : (
           <CallScreen
@@ -496,7 +538,6 @@ const Lobby = ({
   const [joinId, setJoinId] = useState(paramRoomId || "");
 
   const copyToClipboard = () => {
-    // This uses a different method for clipboard access due to sandbox environment limitations.
     const tempInput = document.createElement("textarea");
     tempInput.value = myPeerId;
     document.body.appendChild(tempInput);

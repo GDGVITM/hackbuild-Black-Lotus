@@ -22,7 +22,7 @@ import ContractsPage from "./pages/ContractsPage";
 import ChatPage from "./pages/ChatPage";
 import ManageProjects from "./pages/ManageProjects";
 import Login from "@/pages/Login";
-
+import Generate from "./pages/Generate";
 import { HomePage } from "@/components/HomePage";
 import ContactPage from "@/pages/ContactUs";
 import UserProfile from "@/pages/UserProfile";
@@ -56,6 +56,7 @@ function App() {
       <Router>
         <Layout>
           <Routes>
+            <Route path="/generate" element={<Generate />} />
             <Route path="/signup-student" element={<RegisterStudent />} />
             <Route path="/signup-business" element={<RegisterBusiness />} />
             <Route path="/" element={<HomePage />} />
