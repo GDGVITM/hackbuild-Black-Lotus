@@ -61,12 +61,12 @@ export default function HomePage() {
           {/* Animated dot grid background with blur */}
           <div
             className="absolute inset-0 z-0 pointer-events-none
-              bg-gradient-to-br from-primary/5 to-accent/5
-              dark:from-primary/10 dark:to-accent/10
-              bg-[radial-gradient(circle,rgba(255,255,255,1)_2px,transparent_1px)]
-              dark:bg-[radial-gradient(circle,rgba(255,255,255,0.08)_1px,transparent_1px)]
-              bg-[length:20px_20px] dark:bg-[length:20px_20px]
-              backdrop-blur-sm transition-all duration-500 ease-in-out"
+    bg-[radial-gradient(circle,rgba(0,0,0,0.6)_2px,transparent_1px)],
+    bg-gradient-to-br from-primary/10 via-background to-accent/10
+    dark:bg-[radial-gradient(circle,rgba(255,255,255,0.08)_1px,transparent_1px)],
+    dark:bg-gradient-to-br dark:from-primary/10 dark:via-background dark:to-accent/10
+    bg-[length:20px_20px] dark:bg-[length:20px_20px]
+    backdrop-blur-sm transition-all duration-500 ease-in-out"
           />
 
           <div className="z-10 max-w-4xl mx-auto relative">

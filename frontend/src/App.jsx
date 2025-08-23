@@ -7,7 +7,7 @@ import {
 
 // CONTEXT
 import { CallProvider, useCall } from "@/context/CallContext";
-
+import TransactionVerifier from "./pages/TransactionVerifier";
 // UI COMPONENTS
 import Navbar from "@/components/blocks/Navbar/Navbar";
 import Footer from "@/components/Footer";
@@ -82,7 +82,10 @@ function App() {
             <Route path="/signup-student" element={<RegisterStudent />} />
             <Route path="/signup-business" element={<RegisterBusiness />} />
             <Route path="/user-profile/:id" element={<UserProfile />} />
-
+            <Route
+              path="/transaction-verify"
+              element={<TransactionVerifier />}
+            />
             {/* Job Routes */}
             <Route path="/job/:id" element={<JobDetails />} />
             <Route path="/job-listing" element={<JobListing />} />

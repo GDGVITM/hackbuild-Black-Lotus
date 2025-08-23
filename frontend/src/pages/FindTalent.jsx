@@ -33,9 +33,26 @@ export default function FindTalent() {
   const handleSearch = async () => {
     if (!query) return;
     setLoading(true);
+
     try {
-      const res = await axiosInstance.post("/users/recommend-users", { query });
-      setStudents(res.data?.users || []);
+      const res = await fetch("http://localhost:5000/recommend-users", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ query }),
+      });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      const data = await res.json();
+
+      // backend is expected to return { users: [...] }
+      if (Array.isArray(data.users)) {
+        setStudents(data.users);
+      } else {
+        setStudents([]);
+      }
     } catch (err) {
       console.error("Error fetching students:", err);
       setStudents([]);

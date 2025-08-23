@@ -37,7 +37,11 @@ export default function ConversationListPage() {
       ) : (
         <div className="space-y-3">
           {conversations.map((c) => {
-            const other = c.participants.find((p) => p._id !== user._id);
+            // Try to find another participant, fallback to first participant
+            const other =
+              c.participants.find((p) => p._id !== user._id) ||
+              c.participants[0];
+
             return (
               <Card
                 key={c._id}
@@ -47,10 +51,16 @@ export default function ConversationListPage() {
                 <CardContent className="flex items-center gap-3 p-3">
                   <Avatar>
                     <AvatarImage src={other?.profilePicture} />
-                    <AvatarFallback>{other?.name?.[0] || "U"}</AvatarFallback>
+                    <AvatarFallback>
+                      {other?.name?.[0]?.toUpperCase() ||
+                        other?.email?.[0]?.toUpperCase() ||
+                        "U"}
+                    </AvatarFallback>
                   </Avatar>
                   <div>
-                    <p className="font-medium">{other?.name || "Unknown"}</p>
+                    <p className="font-medium">
+                      {other?.name || other?.email || "Unknown"}
+                    </p>
                     <p className="text-sm text-gray-500">
                       {c.lastMessage?.content
                         ? c.lastMessage.content.slice(0, 30)

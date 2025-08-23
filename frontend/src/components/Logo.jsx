@@ -43,7 +43,7 @@ export const Logo = () => (
       fill="currentColor"
       className="fill-foreground"
     >
-      skillverse
+      SkillVerse
     </text>
   </svg>
 );

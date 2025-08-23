@@ -51,11 +51,11 @@ export default function ProposalModal({ isOpen, onClose, job }) {
       );
 
       const proposalId = proposalRes.data?.data?._id;
-
+      // console.log("Proposal created with ID:", proposalId);
       // 2️⃣ Create/initiate conversation (student + client)
-      const convoRes = await axiosInstance.post(`/chat/`, { proposalId });
-      const conversationId = convoRes.data?.conversation?._id; // 👈 fixed
-
+      // const convoRes = await axiosInstance.post(`/chat/`, { proposalId });
+      // const conversationId = convoRes.data?.conversation?._id; // 👈 fixed
+      navigate(`/chat`);
       toast.success("Proposal submitted!", {
         description: "Conversation created successfully",
       });

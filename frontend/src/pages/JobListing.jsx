@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import ProposalModal from "@/components/ProposalModal";
 import axiosInstance from "@/lib/axios";
+import axios from "axios";
 
 export default function FindWork() {
   const [query, setQuery] = useState("");
@@ -14,6 +15,25 @@ export default function FindWork() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedJob, setSelectedJob] = useState(null);
 
+  // 🔹 Normalize any API response into a consistent job shape
+  const normalizeJobs = (rawJobs) => {
+    if (!Array.isArray(rawJobs)) return [];
+    return rawJobs.map((job, index) => ({
+      _id: job._id || index, // fallback key
+      title: job.title || "Untitled Job",
+      description: job.description || "No description provided.",
+      budget: job.budget || job.rate || "N/A",
+      deadline: job.deadline || null,
+      client: {
+        fullname: job.client?.fullname || job.company || "Unknown Client",
+        avatar: job.client?.avatar || null,
+      },
+      skillsRequired: job.skillsRequired || job.skills_required || [],
+      link: job.link || null,
+    }));
+  };
+
+  // 🔹 Initial jobs fetch
   useEffect(() => {
     const fetchJobs = async () => {
       setLoading(true);
@@ -26,7 +46,7 @@ export default function FindWork() {
           ? res.data.data.projects
           : [];
 
-        setJobs(projects);
+        setJobs(normalizeJobs(projects));
       } catch (err) {
         console.error("Error loading jobs:", err);
         setJobs([]);
@@ -38,19 +58,26 @@ export default function FindWork() {
     fetchJobs();
   }, []);
 
+  // 🔹 Search handler
   const handleSearch = async () => {
     if (!query) return;
     setLoading(true);
     try {
-      const res = await axiosInstance.post("recommend", { query });
+      const res = await axios.post("http://localhost:5000/recommend", {
+        query,
+      });
       const data = res.data;
-      if (Array.isArray(data?.data?.jobs)) {
-        setJobs(data.data.jobs);
+
+      let jobsList = [];
+      if (Array.isArray(data?.jobs)) {
+        jobsList = normalizeJobs(data.jobs);
+      } else if (Array.isArray(data?.data?.jobs)) {
+        jobsList = normalizeJobs(data.data.jobs);
       } else if (Array.isArray(data?.data)) {
-        setJobs(data.data);
-      } else {
-        setJobs([]);
+        jobsList = normalizeJobs(data.data);
       }
+
+      setJobs(jobsList);
     } catch (err) {
       console.error("Error fetching jobs:", err);
       setJobs([]);
@@ -95,11 +122,13 @@ export default function FindWork() {
 
                 {/* Client info */}
                 <div className="flex items-center space-x-2 text-sm text-muted-foreground">
-                  <img
-                    src={job.client?.avatar}
-                    alt={job.client?.fullname}
-                    className="w-6 h-6 rounded-full"
-                  />
+                  {job.client?.avatar && (
+                    <img
+                      src={job.client.avatar}
+                      alt={job.client.fullname}
+                      className="w-6 h-6 rounded-full"
+                    />
+                  )}
                   <span>{job.client?.fullname}</span>
                 </div>
 
@@ -118,12 +147,15 @@ export default function FindWork() {
                 {/* Budget + Deadline */}
                 <div className="text-sm text-muted-foreground mt-2">
                   <p>
-                    <span className="font-medium">Budget:</span> ${job.budget}
+                    <span className="font-medium">Rate/Budget:</span>{" "}
+                    {job.budget}
                   </p>
-                  <p>
-                    <span className="font-medium">Deadline:</span>{" "}
-                    {new Date(job.deadline).toLocaleDateString()}
-                  </p>
+                  {job.deadline && (
+                    <p>
+                      <span className="font-medium">Deadline:</span>{" "}
+                      {new Date(job.deadline).toLocaleDateString()}
+                    </p>
+                  )}
                 </div>
 
                 {/* Actions */}
@@ -131,9 +163,17 @@ export default function FindWork() {
                   <Button onClick={() => handleAddProposal(job)}>
                     Add Proposal
                   </Button>
-                  <Button variant="link">
-                    View Details <ArrowRightIcon className="h-4 w-4 ml-1" />
-                  </Button>
+                  {job.link && (
+                    <Button variant="link" asChild>
+                      <a
+                        href={job.link}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        View Details <ArrowRightIcon className="h-4 w-4 ml-1" />
+                      </a>
+                    </Button>
+                  )}
                 </div>
               </CardContent>
             </Card>

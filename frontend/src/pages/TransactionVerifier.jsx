@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import { ethers } from "ethers";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { toast } from "sonner";
 import {
@@ -29,7 +35,9 @@ const DetailRow = ({ icon, label, children }) => (
 );
 
 const Copyable = ({ value }) => {
-  const displayValue = value ? `${value.slice(0, 10)}...${value.slice(-8)}` : "N/A";
+  const displayValue = value
+    ? `${value.slice(0, 10)}...${value.slice(-8)}`
+    : "N/A";
 
   const copyToClipboard = () => {
     if (!value) return;
@@ -76,7 +84,8 @@ const TransactionVerifier = () => {
       const tx = await provider.getTransaction(txHash);
 
       if (!tx) {
-        const notFoundError = "Transaction hash not found on your local Hardhat blockchain.";
+        const notFoundError =
+          "Transaction hash not found on your local SkillVerse blockchain.";
         toast.error("Not Found", { description: notFoundError });
         setError(notFoundError);
         return;
@@ -101,7 +110,7 @@ const TransactionVerifier = () => {
     } catch (err) {
       console.error("Local blockchain verification failed:", err);
       const connectionError =
-        "Could not connect to the Hardhat node. Is it running at http://127.0.0.1:8545?";
+        "Could not connect to the SkillVerse node. Is it running at http://127.0.0.1:8545?";
       toast.error("Verification Failed", { description: connectionError });
       setError(connectionError);
     } finally {
@@ -116,7 +125,9 @@ const TransactionVerifier = () => {
           <div className="mx-auto bg-primary/10 p-3 rounded-lg w-fit mb-4">
             <GanttChartSquare className="h-8 w-8 text-primary" />
           </div>
-          <CardTitle className="text-3xl font-bold">Hardhat Transaction Verifier</CardTitle>
+          <CardTitle className="text-3xl font-bold">
+            SkillVerse Transaction Verifier
+          </CardTitle>
           <CardDescription>
             Enter a transaction hash from your local node to verify its details.
           </CardDescription>
@@ -130,7 +141,11 @@ const TransactionVerifier = () => {
               className="h-12 text-md font-mono flex-grow"
               onKeyUp={(e) => e.key === "Enter" && verifyTransaction()}
             />
-            <Button onClick={verifyTransaction} disabled={isLoading} className="h-12 px-6">
+            <Button
+              onClick={verifyTransaction}
+              disabled={isLoading}
+              className="h-12 px-6"
+            >
               {isLoading ? (
                 <Loader2 className="h-5 w-5 animate-spin" />
               ) : (
@@ -144,23 +159,38 @@ const TransactionVerifier = () => {
               <Separator />
               {transactionDetails && (
                 <div className="mt-4 text-sm">
-                  <DetailRow icon={<Hash className="h-4 w-4 text-primary" />} label="Hash">
+                  <DetailRow
+                    icon={<Hash className="h-4 w-4 text-primary" />}
+                    label="Hash"
+                  >
                     <Copyable value={transactionDetails.hash} />
                   </DetailRow>
                   <Separator />
-                  <DetailRow icon={<Wallet className="h-4 w-4 text-primary" />} label="From">
+                  <DetailRow
+                    icon={<Wallet className="h-4 w-4 text-primary" />}
+                    label="From"
+                  >
                     <Copyable value={transactionDetails.from} />
                   </DetailRow>
                   <Separator />
-                  <DetailRow icon={<ArrowRight className="h-4 w-4 text-primary" />} label="To">
+                  <DetailRow
+                    icon={<ArrowRight className="h-4 w-4 text-primary" />}
+                    label="To"
+                  >
                     <Copyable value={transactionDetails.to} />
                   </DetailRow>
                   <Separator />
-                  <DetailRow icon={<Box className="h-4 w-4 text-primary" />} label="Block Number">
+                  <DetailRow
+                    icon={<Box className="h-4 w-4 text-primary" />}
+                    label="Block Number"
+                  >
                     <span>{transactionDetails.blockNumber}</span>
                   </DetailRow>
                   <Separator />
-                  <DetailRow icon={<Clock className="h-4 w-4 text-primary" />} label="Timestamp">
+                  <DetailRow
+                    icon={<Clock className="h-4 w-4 text-primary" />}
+                    label="Timestamp"
+                  >
                     <span>{transactionDetails.timestamp}</span>
                   </DetailRow>
                   <Separator />
@@ -168,14 +198,18 @@ const TransactionVerifier = () => {
                   {/* Amount */}
                   <div className="bg-muted/50 -mx-6 px-6 rounded-lg divide-y">
                     <div className="flex items-center justify-between py-3">
-                      <span className="font-bold text-lg text-primary">Amount</span>
+                      <span className="font-bold text-lg text-primary">
+                        Amount
+                      </span>
                       <span className="font-mono text-lg font-bold text-primary">
                         {transactionDetails.value} ETH
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between py-3">
-                      <span className="font-bold text-lg text-primary">Gas Price</span>
+                      <span className="font-bold text-lg text-primary">
+                        Gas Price
+                      </span>
                       <span className="font-mono text-lg font-bold text-primary">
                         {transactionDetails.gasPrice} Gwei
                       </span>

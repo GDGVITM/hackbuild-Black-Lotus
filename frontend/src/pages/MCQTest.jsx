@@ -34,6 +34,10 @@ const MCQTest = () => {
   const [stage2Eval, setStage2Eval] = useState(null);
   const [stage2Loading, setStage2Loading] = useState(false);
 
+  // ⏳ Timers
+  const [mcqTimer, setMcqTimer] = useState(5 * 60); // 5 min in seconds
+  const [stage2Timer, setStage2Timer] = useState(30 * 60); // 30 min in seconds
+
   useEffect(() => {
     if (user?.skills?.length) fetchQuestions();
   }, [user]);
@@ -87,6 +91,7 @@ const MCQTest = () => {
       setStage2Started(true);
       setStage2Answers({});
       setStage2Eval(null);
+      setStage2Timer(30 * 60); // reset timer for stage 2
     } catch (err) {
       console.error(err);
     }
@@ -116,8 +121,47 @@ const MCQTest = () => {
     setStage2Questions([]);
     setStage2Answers({});
     setStage2Eval(null);
+    setMcqTimer(5 * 60);
+    setStage2Timer(30 * 60);
   };
 
+  // Countdown effect for Stage 1 MCQs
+  useEffect(() => {
+    if (questions.length && !evaluation) {
+      if (mcqTimer <= 0) {
+        handleSubmit(); // auto-submit when timer runs out
+        return;
+      }
+      const interval = setInterval(() => {
+        setMcqTimer((t) => t - 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [questions, evaluation, mcqTimer]);
+
+  // Countdown effect for Stage 2
+  useEffect(() => {
+    if (stage2Started && !stage2Eval) {
+      if (stage2Timer <= 0) {
+        submitStage2(); // auto-submit
+        return;
+      }
+      const interval = setInterval(() => {
+        setStage2Timer((t) => t - 1);
+      }, 1000);
+      return () => clearInterval(interval);
+    }
+  }, [stage2Started, stage2Eval, stage2Timer]);
+
+  const formatTime = (seconds) => {
+    const m = Math.floor(seconds / 60)
+      .toString()
+      .padStart(2, "0");
+    const s = (seconds % 60).toString().padStart(2, "0");
+    return `${m}:${s}`;
+  };
+
+  // 🟢 Renderers
   if (!user?.skills?.length) {
     return (
       <div className="max-w-screen-md mx-auto px-4 py-10">
@@ -223,10 +267,11 @@ const MCQTest = () => {
     return (
       <div className="max-w-screen-xl mx-auto px-4 py-10">
         <Card>
-          <CardHeader>
+          <CardHeader className="flex justify-between items-center">
             <CardTitle>
               Question {currentQ + 1} of {questions.length}
             </CardTitle>
+            <Badge variant="destructive">⏱ {formatTime(mcqTimer)}</Badge>
           </CardHeader>
           <CardContent>
             <div className="mb-4 prose prose-invert">
@@ -259,10 +304,11 @@ const MCQTest = () => {
     return (
       <div className="max-w-screen-xl mx-auto px-4 py-10">
         <Card>
-          <CardHeader>
+          <CardHeader className="flex justify-between items-center">
             <CardTitle className="text-2xl font-bold">
               Stage 2: Coding / Descriptive
             </CardTitle>
+            <Badge variant="destructive">⏱ {formatTime(stage2Timer)}</Badge>
           </CardHeader>
           <CardContent className="space-y-6">
             {stage2Questions.map((q, idx) => (

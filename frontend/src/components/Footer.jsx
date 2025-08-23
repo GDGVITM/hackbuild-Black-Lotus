@@ -3,7 +3,12 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
-import { DribbbleIcon, GithubIcon, TwitchIcon, TwitterIcon } from "lucide-react";
+import {
+  DribbbleIcon,
+  GithubIcon,
+  TwitchIcon,
+  TwitterIcon,
+} from "lucide-react";
 
 const footerLinks = [
   {
@@ -42,11 +47,14 @@ const Footer = () => {
 
     setLoading(true);
     try {
-      const response = await axios.post(`${import.meta.env.VITE_API_BASE_URL}/email/newsletter`, {
-        email,
-      });
+      await axios.post(
+        `${import.meta.env.VITE_API_BASE_URL}/email/newsletter`,
+        {
+          email,
+        }
+      );
       setEmail("");
-      // You can add a toast here if needed
+      // Optionally trigger a toast/notification here
     } catch (error) {
       // Optionally handle error
     } finally {
@@ -59,21 +67,18 @@ const Footer = () => {
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="py-12 flex flex-col sm:flex-row items-start justify-between gap-x-8 gap-y-10 px-6 xl:px-0">
           <div>
-            <svg
-              id="logo-7"
-              width="124"
-              height="32"
-              viewBox="0 0 124 32"
-              fill="none"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {/* SVG PATHS */}
-            </svg>
+            {/* SkillVerse Logo Placeholder */}
+            <h2 className="text-2xl font-extrabold text-foreground">
+              SkillVerse
+            </h2>
 
             <ul className="mt-6 flex items-center gap-4 flex-wrap">
               {footerLinks.map(({ title, href }) => (
                 <li key={title}>
-                  <a href={href} className="text-muted-foreground hover:text-foreground">
+                  <a
+                    href={href}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
                     {title}
                   </a>
                 </li>
@@ -83,7 +88,10 @@ const Footer = () => {
 
           <div className="max-w-xs w-full">
             <h6 className="font-semibold">Stay up to date</h6>
-            <form onSubmit={handleSubmit} className="mt-6 flex items-center gap-2">
+            <form
+              onSubmit={handleSubmit}
+              className="mt-6 flex items-center gap-2"
+            >
               <Input
                 type="email"
                 placeholder="Enter your email"
@@ -104,7 +112,7 @@ const Footer = () => {
           <span className="text-muted-foreground">
             &copy; {new Date().getFullYear()}{" "}
             <a href="/" target="_blank" rel="noopener noreferrer">
-              Shadcn UI Blocks
+              SkillVerse
             </a>
             . All rights reserved.
           </span>

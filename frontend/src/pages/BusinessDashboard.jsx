@@ -64,7 +64,12 @@ export default function BusinessDashboard() {
             Welcome back{user?.fullname ? `, ${user.fullname}` : ""}!
           </h1>
           <div className="flex items-center space-x-4">
-            <Button variant="outline">Find Talent</Button>
+            <Link to="/find-talent">
+              <Button variant="outline">Find Talent</Button>
+            </Link>
+            <Link to="/chat">
+              <Button variant="outline">Chats</Button>
+            </Link>
             <Link to="/job-posting">
               <Button>Post New Job</Button>
             </Link>
@@ -72,22 +77,11 @@ export default function BusinessDashboard() {
         </div>
 
         {/* Tabs */}
-        <Tabs defaultValue="statistics" className="w-full">
+        <Tabs defaultValue="projects" className="w-full">
           <TabsList>
-            <TabsTrigger value="statistics">Statistics</TabsTrigger>
             <TabsTrigger value="projects">Projects</TabsTrigger>
             <TabsTrigger value="payments">Payments</TabsTrigger>
           </TabsList>
-
-          {/* Statistics Tab */}
-          <TabsContent value="statistics" className="mt-6">
-            <Card className="p-6">
-              <h2 className="text-xl font-semibold mb-2">Statistics</h2>
-              <p className="text-muted-foreground">
-                Overview of your business performance will appear here.
-              </p>
-            </Card>
-          </TabsContent>
 
           {/* Projects Tab */}
           <TabsContent value="projects" className="mt-6">
