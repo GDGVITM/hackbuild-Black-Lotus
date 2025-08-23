@@ -100,6 +100,7 @@ export default function StudentDashboard() {
     <div className="min-h-screen bg-background p-8">
       <div className="max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Header */}
+        {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div>
             <h1 className="text-3xl font-bold tracking-tight">
@@ -112,6 +113,9 @@ export default function StudentDashboard() {
           <div className="flex items-center space-x-4">
             <Link to="/job-listing">
               <Button>Browse New Jobs</Button>
+            </Link>
+            <Link to="/rate-benchmark">
+              <Button variant="outline">Rate Benchmark</Button>
             </Link>
           </div>
         </div>

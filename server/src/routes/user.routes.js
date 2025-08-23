@@ -9,6 +9,7 @@ import {
   getCurrentUser,
   updateCurrentUser,
   getUserProfile,
+  getAllStudents,
 } from "../controllers/user.controller.js";
 import { upload } from "../middlewares/multer.middleware.js";
 import { verifyJWT } from "../middlewares/auth.middleware.js";
@@ -28,7 +29,7 @@ router.post("/logout", verifyJWT, logoutUser);
 router.post("/change-password", verifyJWT, changeCurrentPassword);
 router.get("/me", verifyJWT, getCurrentUser);
 router.patch("/me", verifyJWT, updateCurrentUser);
-
+router.get("/get-students", getAllStudents);
 // This route can remain public or be protected depending on your app's logic
 router.get("/:id", getUserProfile);
 

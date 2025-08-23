@@ -273,7 +273,17 @@ const getUserProfile = asyncHandler(async (req, res) => {
 
   return res.status(200).json(new ApiResponse(200, "User profile fetched successfully", user));
 });
+const getAllStudents = asyncHandler(async (req, res) => {
+  const students = await User.find({ role: "student" }).select("-password -refreshToken");
+
+  if (!students || students.length === 0) {
+    return res.status(404).json(new ApiResponse(404, "No students found", []));
+  }
+
+  return res.status(200).json(new ApiResponse(200, "Students fetched successfully", students));
+});
 export {
+  getAllStudents,
   registerStudent,
   registerClient,
   loginUser,

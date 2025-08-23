@@ -10,21 +10,23 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
+import { PaperclipIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-
-
+import { toast } from "sonner";
+import axios from "axios";
+import { useAuth } from "@/context/AuthContext";
+import axiosInstance from "@/lib/axios"; // make sure this is imported
 
 export default function ProposalModal({ isOpen, onClose, job }) {
-  // NOTE: Assuming 'user' data is available from a different source or passed down
-  // const { user } = useAuth();
-  const user = { name: "A.I. Student" }; // Placeholder for demonstration
-
+  const { user } = useAuth();
   const [coverLetterText, setCoverLetterText] = useState("");
+  const [coverLetterFile, setCoverLetterFile] = useState(null);
   const [proposedRate, setProposedRate] = useState("");
   const [estimatedTimeline, setEstimatedTimeline] = useState("");
   const [loading, setLoading] = useState(false);
   const [generating, setGenerating] = useState(false);
   const [message, setMessage] = useState("");
+
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
@@ -32,55 +34,88 @@ export default function ProposalModal({ isOpen, onClose, job }) {
     setLoading(true);
     setMessage("");
 
-    // The original axiosInstance code for submitting the proposal.
-    // This can remain if you want to use axios for submissions.
-    // try {
-    //   const data = {
-    //     proposedRate,
-    //     estimatedTimeline,
-    //     coverLetter: coverLetterText,
-    //   };
-    //
-    //   await axiosInstance.post(
-    //     `/proposals/projects/${job._id}/proposals`,
-    //     data
-    //   );
-    //
-    //   setMessage("Proposal submitted successfully!");
-    //   setTimeout(onClose, 2000);
-    // } catch (error) {
-    //   setMessage(
-    //     error.response?.data?.message ||
-    //       "Error submitting proposal. Please try again."
-    //   );
-    // } finally {
-    //   setLoading(false);
-    // }
+    try {
+      const payload = {
+        student: user?._id,
+        project: job._id,
+        proposedRate: parseFloat(proposedRate),
+        estimatedTimeline,
+        coverLetter: coverLetterText,
+      };
 
-    // Navigate to the chat page after submission
-    window.location.href = "http://localhost:3000/chat";
+      // 1️⃣ Create proposal
+      const proposalRes = await axiosInstance.post(
+        `/proposals/projects/${job._id}/proposals`,
+        payload,
+        { headers: { "Content-Type": "application/json" } }
+      );
+
+      const proposalId = proposalRes.data?.data?._id;
+
+      // 2️⃣ Create/initiate conversation (student + client)
+      const convoRes = await axiosInstance.post(`/chat/`, { proposalId });
+      const conversationId = convoRes.data?.conversation?._id; // 👈 fixed
+
+      toast.success("Proposal submitted!", {
+        description: "Conversation created successfully",
+      });
+
+      // 3️⃣ Navigate to the chat room
+      setTimeout(() => {
+        navigate(`/chat/${conversationId}`);
+        onClose();
+      }, 1500);
+    } catch (error) {
+      setMessage(error.response?.data?.message || "Error submitting proposal.");
+      toast.error("Error submitting proposal.", {
+        description: "Please try again.",
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleGenerateCoverLetter = async () => {
-    // Navigate to the generate page
-    window.location.href = "http://localhost:3000/generate";
+    setGenerating(true);
+    setMessage("");
+    try {
+      const res = await axios.post("http://localhost:5000/generate-proposal", {
+        name: user?.fullname,
+        email: user?.email,
+        skills: user?.skills || [],
+        job_title: job.title,
+        description: job.description,
+        client_name: job.client?.fullname,
+        client_company: job.client?.company || "Freelancer Client",
+      });
+
+      setCoverLetterText(
+        res.data.cover_letter?.cover_letter || res.data.proposal || ""
+      );
+    } catch (error) {
+      console.error("Error generating cover letter:", error);
+      setMessage("Failed to generate cover letter. Please try again.");
+    } finally {
+      setGenerating(false);
+    }
   };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-xl">
-        <DialogHeader>
-          <DialogTitle className="text-xl font-semibold text-center">
+      <DialogContent className="sm:max-w-xl p-6">
+        <DialogHeader className="space-y-2 text-center">
+          <DialogTitle className="text-xl font-semibold">
             Submit Proposal for {job.title}
           </DialogTitle>
-          <DialogDescription className="text-center">
+          <DialogDescription>
             Fill in the details below to submit your proposal.
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 mt-4">
+          {/* Rate + Timeline */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="proposedRate">Proposed Rate ($/hr)</Label>
               <Input
                 id="proposedRate"
@@ -90,7 +125,7 @@ export default function ProposalModal({ isOpen, onClose, job }) {
                 required
               />
             </div>
-            <div>
+            <div className="space-y-2">
               <Label htmlFor="estimatedTimeline">Est. Timeline</Label>
               <Input
                 id="estimatedTimeline"
@@ -102,8 +137,9 @@ export default function ProposalModal({ isOpen, onClose, job }) {
             </div>
           </div>
 
-          <div>
-            <div className="flex items-center justify-between mb-2">
+          {/* Cover letter */}
+          <div className="space-y-2">
+            <div className="flex items-center justify-between">
               <Label htmlFor="coverLetter">Cover Letter</Label>
               <Button
                 type="button"
@@ -120,15 +156,37 @@ export default function ProposalModal({ isOpen, onClose, job }) {
               value={coverLetterText}
               onChange={(e) => setCoverLetterText(e.target.value)}
               placeholder="Write or generate a compelling cover letter..."
-              required
+              required={!coverLetterFile}
               className="h-40"
             />
           </div>
 
+          {/* File upload */}
+          <div className="space-y-2">
+            <Label htmlFor="file-upload">Or Upload as a File</Label>
+            <div className="flex items-center space-x-2 border rounded-md p-2">
+              <PaperclipIcon className="h-5 w-5 text-muted-foreground" />
+              <Input
+                id="file-upload"
+                type="file"
+                onChange={(e) => setCoverLetterFile(e.target.files[0])}
+                className="flex-1 cursor-pointer"
+                accept=".doc,.docx,.pdf"
+              />
+            </div>
+            {coverLetterFile && (
+              <p className="text-xs text-muted-foreground">
+                Selected file: {coverLetterFile.name}
+              </p>
+            )}
+          </div>
+
+          {/* Submit */}
           <Button type="submit" disabled={loading} className="w-full">
             {loading ? "Submitting..." : "Submit Proposal"}
           </Button>
 
+          {/* Messages */}
           {message && (
             <p
               className={`text-center text-sm font-medium ${

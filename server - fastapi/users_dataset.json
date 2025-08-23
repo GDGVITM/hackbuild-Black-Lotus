@@ -1,0 +1,170 @@
+[
+  {
+    "fullname": "Alice Johnson",
+    "email": "alice.johnson@example.com",
+    "avatar": "https://i.pravatar.cc/150?img=1",
+    "headline": "Frontend Developer | React & UI/UX",
+    "bio": "Passionate about building modern, accessible, and scalable frontends.",
+    "skills": ["React", "JavaScript", "UI/UX", "HTML", "CSS"],
+    "hourlyRate": 45,
+    "stars": 4.7,
+    "portfolioLinks": {
+      "github": "https://github.com/alicejohnson",
+      "linkedin": "https://linkedin.com/in/alicejohnson"
+    },
+    "educationDetails": {
+      "degree": "BSc Computer Science",
+      "institution": "MIT",
+      "major": "Software Engineering",
+      "yearOfPassing": 2022
+    },
+    "role": "student"
+  },
+  {
+    "fullname": "Ravi Kumar",
+    "email": "ravi.kumar@example.com",
+    "avatar": "https://i.pravatar.cc/150?img=2",
+    "headline": "Backend Engineer | Python & Django",
+    "bio": "Loves designing scalable backend systems with optimized APIs.",
+    "skills": ["Python", "Django", "REST APIs", "PostgreSQL"],
+    "hourlyRate": 50,
+    "stars": 4.9,
+    "portfolioLinks": {
+      "github": "https://github.com/ravikumar",
+      "linkedin": "https://linkedin.com/in/ravikumar"
+    },
+    "educationDetails": {
+      "degree": "MSc Computer Science",
+      "institution": "IIT Delhi",
+      "major": "AI & ML",
+      "yearOfPassing": 2021
+    },
+    "role": "student"
+  },
+  {
+    "fullname": "Sophia Lee",
+    "email": "sophia.lee@example.com",
+    "avatar": "https://i.pravatar.cc/150?img=3",
+    "headline": "UI/UX Designer | Figma & Prototyping",
+    "bio": "Designer who loves creating delightful digital experiences.",
+    "skills": ["Figma", "Wireframing", "Prototyping", "Illustrator"],
+    "hourlyRate": 40,
+    "stars": 4.5,
+    "portfolioLinks": {
+      "website": "https://sophialee.design",
+      "linkedin": "https://linkedin.com/in/sophialee"
+    },
+    "educationDetails": {
+      "degree": "BA Design",
+      "institution": "Parsons School of Design",
+      "major": "Interaction Design",
+      "yearOfPassing": 2020
+    },
+    "role": "student"
+  },
+  {
+    "fullname": "Daniel Thompson",
+    "email": "daniel.thompson@example.com",
+    "avatar": "https://i.pravatar.cc/150?img=4",
+    "headline": "Machine Learning Engineer",
+    "bio": "Focused on deploying ML models into production environments.",
+    "skills": ["Python", "TensorFlow", "LLMs", "NLP"],
+    "hourlyRate": 70,
+    "stars": 4.8,
+    "portfolioLinks": {
+      "github": "https://github.com/danielthompson",
+      "linkedin": "https://linkedin.com/in/danielthompson"
+    },
+    "educationDetails": {
+      "degree": "MSc Artificial Intelligence",
+      "institution": "Stanford University",
+      "major": "Machine Learning",
+      "yearOfPassing": 2021
+    },
+    "role": "student"
+  },
+  {
+    "fullname": "Priya Sharma",
+    "email": "priya.sharma@example.com",
+    "avatar": "https://i.pravatar.cc/150?img=5",
+    "headline": "DevOps Engineer | AWS & Kubernetes",
+    "bio": "Skilled at automating deployments and managing cloud infra.",
+    "skills": ["AWS", "Docker", "Kubernetes", "Terraform"],
+    "hourlyRate": 65,
+    "stars": 4.6,
+    "portfolioLinks": {
+      "github": "https://github.com/priyasharma",
+      "linkedin": "https://linkedin.com/in/priyasharma"
+    },
+    "educationDetails": {
+      "degree": "BTech Information Technology",
+      "institution": "Delhi Technological University",
+      "major": "Cloud Computing",
+      "yearOfPassing": 2019
+    },
+    "role": "student"
+  },
+  {
+    "fullname": "Michael Carter",
+    "email": "michael.carter@example.com",
+    "avatar": "https://i.pravatar.cc/150?img=6",
+    "headline": "Full Stack Developer | Node.js & React",
+    "bio": "I build performant end-to-end applications with clean architecture.",
+    "skills": ["Node.js", "React", "GraphQL", "MongoDB"],
+    "hourlyRate": 60,
+    "stars": 4.9,
+    "portfolioLinks": {
+      "github": "https://github.com/michaelcarter",
+      "linkedin": "https://linkedin.com/in/michaelcarter"
+    },
+    "educationDetails": {
+      "degree": "BSc Computer Science",
+      "institution": "Harvard University",
+      "major": "Software Engineering",
+      "yearOfPassing": 2020
+    },
+    "role": "student"
+  },
+  {
+    "fullname": "Fatima Noor",
+    "email": "fatima.noor@example.com",
+    "avatar": "https://i.pravatar.cc/150?img=7",
+    "headline": "Data Scientist | Pandas & ML",
+    "bio": "Helping businesses unlock value through data and AI.",
+    "skills": ["Python", "Pandas", "Machine Learning", "SQL"],
+    "hourlyRate": 55,
+    "stars": 4.4,
+    "portfolioLinks": {
+      "github": "https://github.com/fatimanoor",
+      "linkedin": "https://linkedin.com/in/fatimanoor"
+    },
+    "educationDetails": {
+      "degree": "MSc Data Science",
+      "institution": "University of Toronto",
+      "major": "Data Analytics",
+      "yearOfPassing": 2021
+    },
+    "role": "student"
+  },
+  {
+    "fullname": "Hiro Tanaka",
+    "email": "hiro.tanaka@example.com",
+    "avatar": "https://i.pravatar.cc/150?img=8",
+    "headline": "Blockchain Developer | Solidity & Smart Contracts",
+    "bio": "I develop secure decentralized apps and audit smart contracts.",
+    "skills": ["Solidity", "Ethereum", "Smart Contracts"],
+    "hourlyRate": 75,
+    "stars": 4.7,
+    "portfolioLinks": {
+      "github": "https://github.com/hiroblock",
+      "linkedin": "https://linkedin.com/in/hiroblock"
+    },
+    "educationDetails": {
+      "degree": "BEng Computer Engineering",
+      "institution": "Tokyo University",
+      "major": "Blockchain Systems",
+      "yearOfPassing": 2018
+    },
+    "role": "student"
+  }
+]

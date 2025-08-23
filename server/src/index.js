@@ -7,7 +7,7 @@ dotenv.config({ path: "./.env" });
 connectDB()
   .then(() => {
     httpServer.listen(process.env.PORT || 8000, () => {
-      console.log(`🚀 Server running at: http://localhost:${process.env.PORT || 8000}/api/v1/`);
+      console.log(`🚀 Server running at: http://localhost:${process.env.PORT}/api/v1/`);
       console.log(
         `❤️  Check health at: http://localhost:${process.env.PORT}/api/v1/health`
       );

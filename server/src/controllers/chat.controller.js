@@ -1,58 +1,109 @@
-import { GoogleGenerativeAI } from "@google/generative-ai";
-import { asyncHandler } from "../utils/asyncHandler.js";
+import { Conversation } from "../models/conversation.model.js";
+import { Message } from "../models/message.model.js";
+import { Proposal } from "../models/proposal.model.js";
 import { ApiError } from "../utils/apiError.js";
 import { ApiResponse } from "../utils/apiResponse.js";
-import { CHATBOT_PERSONA } from "../constants.js";
+import { asyncHandler } from "../utils/asyncHandler.js";
 
-const genAI = new GoogleGenerativeAI(process.env.GOOGLE_API_KEY);
+const initiateConversation = asyncHandler(async (req, res) => {
+  const { proposalId } = req.body;
+  const clientId = req.user._id;
 
-const handleChat = asyncHandler(async (req, res) => {
-  const { message, history } = req.body;
-  const user = req.user;
-
-  if (!message || message.trim() === "") {
-    throw new ApiError(400, "Message is required");
+  if (!proposalId) {
+    throw new ApiError(400, "Proposal ID is required");
   }
 
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash-latest" });
+  let conversation = await Conversation.findOne({ proposal: proposalId });
 
-  const systemPrompt = `
-      ${CHATBOT_PERSONA}
+  if (!conversation) {
+    const proposal = await Proposal.findById(proposalId);
+    if (!proposal) {
+      throw new ApiError(404, "Proposal not found");
+    }
 
-      The user you are currently talking to is named ${user.fullName}. Please address them by their name when appropriate to make the conversation more personal.
-    `;
-
-  try {
-    const chat = model.startChat({
-      history: [
-        {
-          role: "user",
-          parts: [{ text: systemPrompt }],
-        },
-        {
-          role: "model",
-          parts: [
-            {
-              text: `Hello ${user.fullName}! I'm Nexus, your personal assistant for this platform. How can I help you today?`,
-            },
-          ],
-        },
-        ...(history || []),
-      ],
-      generationConfig: {
-        maxOutputTokens: 200,
-      },
+    conversation = await Conversation.create({
+      proposal: proposalId,
+      participants: [clientId, proposal.student],
     });
-
-    const result = await chat.sendMessage(message);
-    const response = await result.response;
-    const text = response.text();
-
-    return res.status(200).json(new ApiResponse(200, "Reply sent successfully", { reply: text }));
-  } catch (error) {
-    console.error("Error communicating with Google AI:", error);
-    throw new ApiError(500, "Failed to get a response from the AI service.", [], error.stack);
   }
+
+  return res.status(201).json({
+    statusCode: 200,
+    message: "Conversation initiated successfully",
+    conversation, // 👈 cleaner response shape
+  });
 });
 
-export { handleChat };
+const getMessages = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  console.log("📩 Fetching messages for conversation:", id);
+
+  const messages = await Message.find({ conversation: id })
+    .sort({ createdAt: -1 })
+    .populate("sender", "name profilePicture");
+
+  console.log("📩 Found messages:", messages.length);
+  return res.status(200).json(new ApiResponse(200, "ok", messages.reverse()));
+});
+
+const getMyConversations = asyncHandler(async (req, res) => {
+  const userId = req.user._id;
+
+  const conversations = await Conversation.find({ participants: userId })
+    .populate({
+      path: "participants",
+      select: "name profilePicture email",
+    })
+    .sort({ updatedAt: -1 });
+
+  const conversationsWithLastMessage = await Promise.all(
+    conversations.map(async (convo) => {
+      const lastMessage = await Message.findOne({ conversation: convo._id }).sort({
+        createdAt: -1,
+      });
+      return {
+        ...convo.toObject(),
+        lastMessage,
+      };
+    })
+  );
+
+  return res
+    .status(200)
+    .json(
+      new ApiResponse(
+        200,
+        "User conversations retrieved successfully",
+        conversationsWithLastMessage
+      )
+    );
+});
+
+const sendMessage = async (req, res) => {
+  try {
+    const { id } = req.params; // conversationId
+    const { sender, content } = req.body;
+
+    const conversation = await Conversation.findById(id);
+    if (!conversation) {
+      return res.status(404).json({ success: false, message: "Conversation not found" });
+    }
+
+    const message = new Message({
+      conversation: id,
+      sender,
+      content,
+    });
+    await message.save();
+    await message.populate("sender", "name profilePicture");
+
+    // emit with socket.io
+    req.io.to(id).emit("newMessage", message);
+
+    return res.status(201).json({ success: true, data: message });
+  } catch (err) {
+    return res.status(500).json({ success: false, message: err.message });
+  }
+};
+
+export { initiateConversation, getMessages, getMyConversations, sendMessage };

@@ -40,13 +40,12 @@ const ChatBotButton = () => {
         text: msg.text,
       }));
 
-      const res = await axios.post("http://localhost:8000/chat", {
+      const res = await axios.post("http://localhost:5000/chat", {
         message: currentInput,
         history,
       });
 
-      let botReply =
-        res.data?.data?.reply || "Sorry, I couldn't get a response.";
+      let botReply = res.data?.reply || "Sorry, I couldn't get a response.";
 
       // Optional navigation directive in response
       const navRegex = /NAVIGATE_TO::(\/\S*)/;

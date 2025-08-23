@@ -5,7 +5,7 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 
-class ProposalAgent:
+class CoverLetterAgent:
     def __init__(self, llm=None, data_file="jobs_dataset.json"):
         self.data_file = Path(data_file)
 
@@ -19,35 +19,65 @@ class ProposalAgent:
             model="gemini-1.5-flash-latest", temperature=0.7
         )
 
-        self.proposal_prompt = ChatPromptTemplate.from_messages(
+        self.cover_letter_prompt = ChatPromptTemplate.from_messages(
             [
                 (
                     "system",
-                    """You are an AI freelance assistant that writes tailored proposals 
-                            for student freelancers applying to jobs.  
+                    """You are an AI assistant that writes professional, tailored cover letters 
+                    for students applying to jobs on the platform SkillVerse.
 
-                            Your output must:
-                            - Be written in a professional but friendly tone  
-                            - Highlight how the student’s skills match the job  
-                            - Be concise (3–5 paragraphs max)  
-                            - Include a short greeting and a polite closing  
-                            - Avoid generic filler text. Make it specific to the job and skills.""",
+                    Your output must:
+                    - Start with a personalized greeting (use client name and/or company if available, otherwise "Hiring Manager")
+                    - Be structured like a real cover letter (greeting, intro, body paragraphs, closing)
+                    - Be concise (3–5 paragraphs max)  
+                    - Use a professional but approachable tone  
+                    - Highlight how the student’s skills and background align with the job description
+                    - End with a polite closing and the candidate’s name/signature  
+                    - Avoid generic filler text — keep it specific to the role, skills, and client/company.""",
                 ),
                 (
                     "human",
-                    "Job details:\n{job}\n\nUser skills:\n{skills}\n\nWrite the proposal.",
+                    """Job Information:
+                    - Title: {job_title}
+                    - Description: {description}
+                    - Client Name: {client_name}
+                    - Company: {client_company}
+
+                    Candidate Information:
+                    - Name: {name}
+                    - Email: {email}
+                    - Skills: {skills}
+
+                    Write a tailored, professional cover letter for this candidate applying to the job.
+                    """,
                 ),
             ]
         )
 
-        self.chain = self.proposal_prompt | self.llm | StrOutputParser()
+        self.chain = self.cover_letter_prompt | self.llm | StrOutputParser()
 
-    def generate_proposal(self, job_title: str, user_skills: str):
-        job = next((j for j in self.jobs if j["title"] == job_title), None)
-        if not job:
-            return {"error": f"Job '{job_title}' not found in dataset."}
+    def generate_cover_letter(
+        self,
+        name: str,
+        email: str,
+        skills: list[str],
+        job_title: str,
+        description: str,
+        client_name: str = "",
+        client_company: str = "",
+    ):
+        """Generate a customized cover letter for a job application."""
 
-        job_context = json.dumps(job, indent=2)
+        cover_letter = self.chain.invoke(
+            {
+                "job_title": job_title,
+                "description": description,
+                "client_name": client_name or "Hiring Manager",
+                "client_company": client_company or "the company",
+                "name": name,
+                "email": email,
+                "skills": ", ".join(skills),
+            }
+        )
 
-        proposal = self.chain.invoke({"job": job_context, "skills": user_skills})
-        return {"proposal": proposal}
+        return {"cover_letter": cover_letter}

@@ -2,7 +2,6 @@ from pydantic import BaseModel
 from typing import List, Dict
 from pathlib import Path
 from dotenv import load_dotenv
-
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_community.vectorstores import Chroma
@@ -10,13 +9,9 @@ from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.document_loaders import TextLoader
 from langchain_google_genai import ChatGoogleGenerativeAI, GoogleGenerativeAIEmbeddings
 from langchain_core.output_parsers import StrOutputParser
-
 import os
 
 load_dotenv()
-GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
-if not GOOGLE_API_KEY:
-    raise ValueError("❌ GOOGLE_API_KEY is missing in .env")
 
 
 class ChatRequest(BaseModel):
@@ -42,21 +37,24 @@ splitter = RecursiveCharacterTextSplitter(chunk_size=1500, chunk_overlap=200)
 chunks = splitter.split_documents(docs)
 
 embedding = GoogleGenerativeAIEmbeddings(
-    model="models/embedding-001", google_api_key=GOOGLE_API_KEY
+    model="models/embedding-001",
 )
 vector_store = Chroma.from_documents(chunks, embedding)
 retriever = vector_store.as_retriever(search_kwargs={"k": 4})
 
 llm = ChatGoogleGenerativeAI(
-    model="gemini-1.5-flash-latest", temperature=0.2, google_api_key=GOOGLE_API_KEY
+    model="gemini-1.5-flash-latest",
+    temperature=0.2,
 )
 
 rag_prompt = ChatPromptTemplate.from_messages(
     [
         SystemMessage(
-            content="""You are an expert and helpful AI assistant for the 'WorkHive' freelance marketplace.
-                                Use the provided context to answer the user's question accurately and helpfully. If the context doesn't contain enough information to fully answer the question, say so and suggest they contact support for more details.
-                                Be friendly, professional, and comprehensive in your responses. Draw directly from the context provided."""
+            content="""You are an expert and helpful AI assistant for the 'SkillVerse' freelance marketplace.
+
+Use the provided context to answer the user's question accurately and helpfully. If the context doesn't contain enough information to fully answer the question, say so and suggest they contact support for more details.
+
+Be friendly, professional, and comprehensive in your responses. Draw directly from the context provided."""
         ),
         MessagesPlaceholder(variable_name="history"),
         ("human", "Context:\n{context}\n\nQuestion: {question}"),
@@ -66,10 +64,13 @@ rag_prompt = ChatPromptTemplate.from_messages(
 fallback_prompt = ChatPromptTemplate.from_messages(
     [
         SystemMessage(
-            content="""You are a helpful AI assistant for the 'WorkHive' freelance marketplace.
-                                You should be friendly and professional. For basic greetings, respond warmly and ask how you can help with WorkHive-related questions.
-                                For questions you can't answer specifically about WorkHive features, politely explain that you'd need more specific information from our documentation or suggest they contact support.
-                                Keep responses concise and helpful."""
+            content="""You are a helpful AI assistant for the 'SkillVerse' freelance marketplace.
+
+You should be friendly and professional. For basic greetings, respond warmly and ask how you can help with SkillVerse-related questions.
+
+For questions you can't answer specifically about SkillVerse features, politely explain that you'd need more specific information from our documentation or suggest they contact support.
+
+Keep responses concise and helpful."""
         ),
         MessagesPlaceholder(variable_name="history"),
         ("human", "{question}"),
@@ -100,6 +101,7 @@ def convert_history(history: List[Dict[str, str]]):
 
 
 def is_greeting_or_general(message: str) -> bool:
+    """Check if message is a greeting or very general query"""
     greetings = ["hello", "hi", "hey", "good morning", "good afternoon", "good evening"]
     general_queries = ["help", "what can you do", "how are you"]
 
@@ -115,6 +117,8 @@ fallback_chain = fallback_prompt | llm | StrOutputParser()
 
 
 async def get_response(question: str, history: List):
+    """Route to appropriate chain based on query type and context availability"""
+
     if is_greeting_or_general(question):
         print("👋 Using fallback for greeting/general query")
         return fallback_chain.invoke({"question": question, "history": history})

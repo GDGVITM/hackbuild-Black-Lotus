@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Logo } from "@/components/Logo";
 import { NavMenu } from "./nav-menu";
 import { NavigationSheet } from "./navigation-sheet";
-import { LogOut, Settings, LayoutDashboard } from "lucide-react";
+import { LogOut, Settings, LayoutDashboard, User } from "lucide-react";
 import { ModeToggle } from "@/components/ThemeToggle";
 import {
   DropdownMenu,
@@ -24,7 +24,7 @@ const Navbar = () => {
     try {
       await logout();
       toast.success("Logged out successfully");
-      navigate("/login");
+      navigate("/");
     } catch (error) {
       toast.error("Logout failed. Please try again.");
     }
@@ -53,18 +53,33 @@ const Navbar = () => {
                 <DropdownMenuTrigger asChild>
                   <Avatar className="h-9 w-9 cursor-pointer ring-2 ring-muted-foreground/20">
                     <AvatarImage src={user.avatar} alt={user.fullname} />
-                    <AvatarFallback>{user.fullname?.charAt(0).toUpperCase() || "U"}</AvatarFallback>
+                    <AvatarFallback>
+                      {user.fullname?.charAt(0).toUpperCase() || "U"}
+                    </AvatarFallback>
                   </Avatar>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent
                   align="end"
                   className="w-48 rounded-xl shadow-md border bg-background"
                 >
-                  <DropdownMenuItem onClick={() => navigate(getDashboardPath())} className="gap-2">
+                  <DropdownMenuItem
+                    onClick={() => navigate(getDashboardPath())}
+                    className="gap-2"
+                  >
                     <LayoutDashboard className="h-4 w-4" />
                     Dashboard
                   </DropdownMenuItem>
-                  <DropdownMenuItem onClick={() => navigate("/settings")} className="gap-2">
+                  <DropdownMenuItem
+                    onClick={() => navigate(`/user-profile/${user._id}`)}
+                    className="gap-2"
+                  >
+                    <User className="h-4 w-4" />
+                    Profile
+                  </DropdownMenuItem>
+                  <DropdownMenuItem
+                    onClick={() => navigate("/settings")}
+                    className="gap-2"
+                  >
                     <Settings className="h-4 w-4" />
                     Settings
                   </DropdownMenuItem>
@@ -87,7 +102,9 @@ const Navbar = () => {
                 >
                   Sign In
                 </Button>
-                <Button onClick={() => navigate("/signup")}>Sign Up</Button>
+                <Button onClick={() => navigate("/get-started")}>
+                  Get Started
+                </Button>
               </>
             )}
             <ModeToggle />

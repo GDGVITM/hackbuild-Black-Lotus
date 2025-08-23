@@ -125,8 +125,8 @@ const PaymentPage = () => {
         <CardHeader>
           <CardTitle>Donate & Log on Blockchain</CardTitle>
           <CardDescription>
-            Enter an amount to make a test payment with Razorpay. The transaction will be recorded
-            on a local blockchain.
+            Enter an amount to make a test payment with Razorpay. The
+            transaction will be recorded on a local blockchain.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -150,7 +150,11 @@ const PaymentPage = () => {
           >
             {loading ? "Processing..." : `Pay ₹${amount}`}
           </Button>
-          {!user && <p className="text-xs text-red-500">Please log in to make a payment.</p>}
+          {!user && (
+            <p className="text-xs text-red-500">
+              Please log in to make a payment.
+            </p>
+          )}
           {paymentDetails && (
             <div className="text-sm text-green-600 dark:text-green-400 text-center p-3 bg-green-50 dark:bg-gray-800 rounded-lg">
               <p>

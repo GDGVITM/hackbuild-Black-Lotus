@@ -7,14 +7,15 @@ import { Textarea } from "@/components/ui/textarea";
 import { MailIcon, MapPinIcon, MessageCircle, PhoneIcon } from "lucide-react";
 
 const ContactPage = () => (
-  <div className="min-h-screen flex items-center justify-center py-16">
-    <div className="w-full max-w-screen-xl mx-auto px-6 xl:px-0">
+  <div className="min-h-screen flex justify-center pt-16">
+    <div className="w-full max-w-screen-xl mx-auto px-4 sm:px-6 lg:px-8">
       <b className="text-muted-foreground">Contact Us</b>
       <h2 className="mt-3 text-3xl md:text-4xl font-bold tracking-tight">
         Chat to our friendly team
       </h2>
       <p className="mt-3 text-base sm:text-lg">
-        We&apos;d love to hear from you. Please fill out this form or shoot us an email.
+        We&apos;d love to hear from you. Please fill out this form or shoot us
+        an email.
       </p>
       <div className="mt-24 grid lg:grid-cols-2 gap-16 md:gap-10">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-12">
@@ -23,9 +24,14 @@ const ContactPage = () => (
               <MailIcon />
             </div>
             <h3 className="mt-6 font-semibold text-xl">Email</h3>
-            <p className="my-2.5 text-muted-foreground">Our friendly team is here to help.</p>
-            <a className="font-medium text-primary" href="mailto:akashmoradiya3444@gmail.com">
-              akashmoradiya3444@gmail.com
+            <p className="my-2.5 text-muted-foreground">
+              Our friendly team is here to help.
+            </p>
+            <a
+              className="font-medium text-primary"
+              href="mailto:hello@skillverse.com"
+            >
+              hello@skillverse.com
             </a>
           </div>
           <div>
@@ -33,7 +39,9 @@ const ContactPage = () => (
               <MessageCircle />
             </div>
             <h3 className="mt-6 font-semibold text-xl">Live chat</h3>
-            <p className="my-2.5 text-muted-foreground">Our friendly team is here to help.</p>
+            <p className="my-2.5 text-muted-foreground">
+              Our friendly team is here to help.
+            </p>
             <a className="font-medium text-primary" href="#">
               Start new chat
             </a>
@@ -43,14 +51,24 @@ const ContactPage = () => (
               <MapPinIcon />
             </div>
             <h3 className="mt-6 font-semibold text-xl">Office</h3>
-            <p className="my-2.5 text-muted-foreground">Come say hello at our office HQ.</p>
+            <p className="my-2.5 text-muted-foreground">
+              Come say hello at our office HQ.
+            </p>
             <a
               className="font-medium text-primary"
               href="https://map.google.com"
               target="_blank"
               rel="noopener noreferrer"
             >
-              100 Smith Street Collingwood <br /> VIC 3066 AU
+              SkillVerse Technologies Pvt. Ltd.,
+              <br />
+              Level 7, Nexus Tower, G Block,
+              <br />
+              Bandra Kurla Complex (BKC),
+              <br />
+              Mumbai, Maharashtra 400051
+              <br />
+              India
             </a>
           </div>
           <div>
@@ -58,13 +76,14 @@ const ContactPage = () => (
               <PhoneIcon />
             </div>
             <h3 className="mt-6 font-semibold text-xl">Phone</h3>
-            <p className="my-2.5 text-muted-foreground">Mon-Fri from 8am to 5pm.</p>
-            <a className="font-medium text-primary" href="tel:+15550000000">
-              +1 (555) 000-0000
+            <p className="my-2.5 text-muted-foreground">
+              Mon-Fri from 8am to 5pm.
+            </p>
+            <a className="font-medium text-primary" href="tel:+912240859200">
+              +91 22 4085 9200
             </a>
           </div>
         </div>
-
         <Card className="bg-accent shadow-none">
           <CardContent className="p-6 md:p-10">
             <form>
